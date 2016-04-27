@@ -890,7 +890,7 @@ This is how we divide the bitstream by the generator:
 
 \begin{lstlisting}
       _______________
-1001 | 1010111001 000        # start of divison
+1001 | 1010111001 000        # start of CRC
        1001|||||| |||        # XOR 4 leftmost bits with the generator
        ----vv|||| |||         
          1111|||| |||        # if remainder is zero, we ignore the result

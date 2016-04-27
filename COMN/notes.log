@@ -1,13 +1,10 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013) (format=pdflatex 2015.9.10)  25 APR 2016 15:59
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013) (format=pdflatex 2015.9.10)  27 APR 2016 16:29
 entering extended mode
  restricted \write18 enabled.
+ file:line:error style messages enabled.
  %&-line parsing enabled.
-**notes.tex
-(./notes.tex
-LaTeX2e <2011/06/27>
-Babel <v3.8m> and hyphenation patterns for english, dumylang, nohyphenation, lo
-aded.
-(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+**\input notes.tex
+(./notes.tex (/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
 Document Class: article 2007/10/19 v1.4h Standard LaTeX document class
 (/usr/share/texlive/texmf-dist/tex/latex/base/size10.clo
 File: size10.clo 2007/10/19 v1.4h Standard LaTeX file (size option)
@@ -492,8 +489,7 @@ Package floatrow Info: Modified rotfloat package code loaded on input line 493.
 \LTleft=\skip66
 \LTright=\skip67
 \flrow@types=\toks34
-)
-No file notes.aux.
+) (./notes.aux)
 \openout1 = `notes.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 19.
@@ -509,6 +505,7 @@ LaTeX Font Info:    ... okay on input line 19.
 LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 19.
 LaTeX Font Info:    ... okay on input line 19.
 \c@lstlisting=\count143
+
 (/usr/share/texlive/texmf-dist/tex/context/base/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
 \scratchcounter=\count144
@@ -842,13 +839,13 @@ Underfull \hbox (badness 10000) in paragraph at lines 967--967
 
 [25] [26] (./notes.aux) ) 
 Here is how much of TeX's memory you used:
- 13353 strings out of 495063
- 241714 string characters out of 3182201
+ 13355 strings out of 495063
+ 241734 string characters out of 3182201
  304175 words of memory out of 3000000
  16289 multiletter control sequences out of 15000+200000
  10580 words of font info for 39 fonts, out of 3000000 for 9000
  14 hyphenation exceptions out of 8191
- 56i,12n,55p,483b,877s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 56i,12n,55p,490b,877s stack positions out of 5000i,500n,10000p,200000b,50000s
 </usr/share/texlive/texmf-dist/fonts/type1/public/amsf
 onts/cm/cmbx10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/c
 m/cmbx12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx
@@ -868,7 +865,7 @@ fonts/cm/cmr8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm
 hare/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb></usr/share/t
 exlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt12.pfb></usr/share/texlive
 /texmf-dist/fonts/type1/public/amsfonts/cm/cmtt8.pfb>
-Output written on notes.pdf (26 pages, 346555 bytes).
+Output written on notes.pdf (26 pages, 346548 bytes).
 PDF statistics:
  177 PDF objects out of 1000 (max. 8388607)
  123 compressed objects within 2 object streams
