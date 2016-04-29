@@ -2,6 +2,12 @@
 
 \usepackage{listings}
 \usepackage{amsmath}
+\usepackage{parskip}
+\usepackage{newlfont}
+
+\lstset{
+language=sql
+}
 
 % If and only if
 \def\biconditional{$\leftrightarrow\;$}
@@ -17,5 +23,93 @@
 \section{General Database Patter}
 
 Relations \biconditional Tables
+
+\subsection{Relational Algebra}
+
+Relation algebra can express the same statements as SQL \texttt{SELECT-FROM-WHERE} statements.
+
+\begin{center}
+  \begin{tabular}{|c|c|}
+    \hline
+    $\pi$ & Projection\\
+    \hline
+    $\sigma$ & Selection\\
+    \hline
+    $\times$ & (\textit{Cartesian/Cross}) Product\\
+    \hline
+    $\rho$ & Renaming\\
+    \hline
+    $\bigcup$ & Union\\
+    \hline
+    $\bigcap$ & Intersection\\
+    \hline
+    $\backslash$ & Difference\\
+    \hline
+    - & Difference\\
+    \hline
+    $\Join$ & Natural Join\\
+    \hline
+  \end{tabular}
+\end{center}
+
+\subsubsection{$\pi$: Projection}
+
+Projection is a \textit{vertical} operation, allowing you to choose some \textit{columns}.
+
+\textbf{Syntax}:
+
+$\pi_{\text{Set of Attributes}}(\text{relation})$
+
+Any set of attributes not mentioned by the projection are discarded.
+
+\subsubsection{$\sigma$: Selection}
+
+Selection is a \textit{horizontal} operation, allowing you to choose \textit{rows that satisfy a condition}.
+
+\textbf{Syntax}:
+
+$\sigma_{\text{Condition}}(\text{Relation})$
+
+This provides users with a \textit{view} of data, hiding rows that do not satisfy the condition.
+
+Consecutive selections are the same as a conjunction of the conditions in one selection; however, they can bring around different levels of performance. Consecutive selections are performed sequentially and eliminate rows that do not meet the criteria, whereas the conjunction means that the selection is performed once with a stricter condition.
+
+\subsubsection{$\times$: Cartesian Product}
+
+Where each row of two relations is \textit{concatenated} to produce a new relation.
+
+\textbf{Syntax}:
+
+$\text{A Relation} \times \text{Another Relation}$
+
+A Cartesian product is the product of the two relations' sizes; meaning that Cartesian products can balloon in size.
+
+\subsubsection{$\rho$: Renaming}
+
+A useful tool that \textit{aids} Cartesian products where the two relations have columns that go by the same name.
+
+For example, a bank may have a table for all of a customer's accounts, and another table for all accounts open at some branch. These two tables could have a selection performed upon them to find all of a customer's accounts across all branches, but they both have an account name column. Renaming one allows for them to be distinguishable. 
+
+\subsubsection{$\Join$: Natural Join}
+
+Joining two tables on \textit{common attributes}.
+
+This however can be expressed using a combination of projection, selection, renaming and the Cartesian product. It is more efficient to use a natural join however, similar to sequential selections.
+
+\section{SQL}
+
+All queries have the general format:
+
+\begin{lstlisting}
+    SELECT list, of, attributes
+    FROM list, of, relations
+    WHERE conditions
+\end{lstlisting}
+
+\texttt{WHERE} statements allow for tables to be \textbf{joined}.
+
+\subsection{Union Compatibility}
+
+Sometimes straightforward queries in English are a little more complicated than they are in relational algebra and in SQL. 
 
 \end{document}
