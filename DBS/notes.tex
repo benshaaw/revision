@@ -4,9 +4,11 @@
 \usepackage{amsmath}
 \usepackage{parskip}
 \usepackage{newlfont}
+\usepackage{courier}
 
 \lstset{
-language=sql
+language=sql,
+basicstyle=\footnotesize\ttfamily
 }
 
 % If and only if
@@ -20,11 +22,7 @@ language=sql
 \date{}
 \maketitle
 
-\section{General Database Patter}
-
-Relations \biconditional Tables
-
-\subsection{Relational Algebra}
+\section{Relational Algebra}
 
 Relation algebra can express the same statements as SQL \texttt{SELECT-FROM-WHERE} statements.
 
@@ -108,8 +106,229 @@ All queries have the general format:
 
 \texttt{WHERE} statements allow for tables to be \textbf{joined}.
 
+\subsection{Table Management}
+
+\subsubsection{Creating a Table}
+
+\begin{lstlisting}
+  CREATE TABLE name (
+       type name,
+       .
+       .
+       .
+  );
+\end{lstlisting}
+
+\subsubsection{Adding Entries to a Table}
+
+\begin{lstlisting}
+  INSERT INTO name VALUES
+      (val1, val2, val3);
+\end{lstlisting}
+
+\subsubsection{Altering a Table's Attributes}
+
+\begin{lstlisting}
+  ALTER TABLE name
+      ADD COLUMN name type
+      DROP COLUMN name;
+\end{lstlisting}
+
+\subsubsection{Changing Values in a Table}
+
+\begin{lstlisting}
+  UPDATE table
+  SET newValue
+  WHERE condition;
+\end{lstlisting}
+
+\subsubsection{Removing Entries from a Table}
+
+\begin{lstlisting}
+  DELETE FROM name
+      WHERE condition;
+\end{lstlisting}
+
+\subsubsection{Deleting a Table}
+
+\begin{lstlisting}
+  DROP TABLE name;
+\end{lstlisting}
+
+
 \subsection{Union Compatibility}
 
 Sometimes straightforward queries in English are a little more complicated than they are in relational algebra and in SQL. 
+
+\subsection{Nested Queries}
+
+A nested query is also referred to as a \textit{subquery} or a \textit{inner} query.
+
+This allows for a condition to be checked across both the main query, and the sub query.While this can be achieved by using joins, nested queries can be ideal for situations that have complex predicates.
+
+\subsection{Dependencies}
+
+The most common dependencies are \textit{functional} and \textit{inclusion} dependencies.
+
+\subsubsection{Functional Dependencies}
+
+Consider a relation $R$ that has attributes $X$ and $Y$. $Y$ would be functionally dependent on $X$ \textit{iff} each value in $X$ is associated with one value in $Y$. This is denoted $X \implies Y$.
+
+Consider a database that holds \textit{National Insurance} numbers and \textit{employee names}. We would say that the \textit{employee names} attribute is \underline{functionally dependent on} the \textit{National Insurance} numbers attribute. This is because the \textit{National Insurance} number is \textit{unique} to one person, whereas more than one person can have the same name.
+
+So, say we have some set, $U$, containing all attributes of the relation $R$. The subset $K$ of $U$ is a \textit{key} for $R$ if satisfies the functional dependency $K \implies U$.
+
+A \textit{key} allows us to \textit{uniquely identify} a tuple in a relation.
+
+A key will \underline{always} exists for any relation.
+
+\subsubsection{Inclusion Dependency}
+
+Beware; many \textbf{WORDS} appear in this section.
+
+A key concept of this kind of dependency is \textit{referential integrity}. This is when we expect that \underline{all} values of some attribute in one table, all \underline{exist in some other} table.
+
+Referential integrity describes \textit{inclusion dependencies}.
+
+We say that an inclusion dependency holds when $R(A_1, \ldots, A_n) \subseteq S(B_1, \ldots, B_n)$; that if a tuple exists in $R$, then that exact tuple appears in $S$. These are referenced to as \textit{foreign keys}, referencing $B_1, \ldots, B_n$ as the key for $S$.
+
+In other words, a \textit{foreign key} is a tuple that uniquely identifies a row in another table.
+
+\filbreak
+\subsection{Keys}
+
+Intersects with the \textit{Dependencies} section above.
+
+\subsubsection{Primary Keys}
+
+A \textit{primary key} is a column, or collection of columns, that \textit{uniquely identify} all of a table's records. A primary \textit{cannot be null} and must contain a \textit{unique value for each row of data}.
+
+This type of key is critical for relational databases to work as a concept. In SQL, the primary key can be defined in two ways.
+
+\textit{After a variable declaration}:
+
+\begin{lstlisting}
+  CREATE TABLE Student (
+       name varchar(50),
+       uun integer PRIMARY KEY
+  );
+\end{lstlisting}
+
+\textit{After a table declaration}:
+
+\begin{lstlisting}
+  CREATE TABLE Movies (
+       m_title varchar(30),
+       m_director varchar(30),
+       m_year smallint,
+       m_genre varchar(30),
+       PRIMARY KEY (m_title,m_year)
+       );
+\end{lstlisting}
+
+The latter would be referred to as having a \textit{compound primary key}.
+
+A primary key does not allow for tuples to be inserted in to the table if they are the same as the primary key.
+
+SQL allows for a key to be declared as \texttt{UNIQUE}, and is very similar to the \texttt{PRIMARY KEY} but \texttt{UNIQUE} still allows for null entries.
+
+\subsubsection{Foreign Keys}
+
+How \textit{referential integrity} is enforced in SQL.
+
+Say we have two tables created, we can declare a \textit{foreign key} by stating that some attribute or attributes \texttt{REFERENCES} attributes in another table.
+
+\filbreak
+\subsection{Aggregate Functions}
+
+Some examples of \textit{aggregate functions} would be the \texttt{COUNT} and \texttt{SUM} functions. Care needs to be taken with aggregate functions as SQL tends to keep \textit{duplicates} unless explicitly mentioned otherwise. 
+
+Aggregate functions can also affect the way that results are returned.
+
+\subsubsection{Order By}
+
+\texttt{ORDER BY} simply re-orders some output of an SQL query. 
+
+\subsubsection{Group By}
+
+\texttt{GROUP BY} can sometimes seem to work in an underhanded function. Group by can point out to an aggregate function, on \textit{what basis should attributes be aggregated}.
+
+For example, say we have a table that details purchases made by customers on a website, and we want to find out how much each customer has spent.
+
+The following SQL query would suffice:
+
+\begin{lstlisting}
+  SELECT name, SUM(amount)
+      FROM sales
+      GROUP BY name;
+\end{lstlisting}
+
+\section{Relational Calculus}
+
+Also known as \textit{first-order predicate logic}. \textit{Safe} relational calculus is equally as expressive as relational algebra.
+
+Relational calculus consists of:
+
+\begin{center}
+  \begin{tabular}{|c|c|}
+    \hline
+    Relation Names & \textit{Customers, Accounts}\\
+    \hline
+    Constants & \textit{'London'}\\
+    \hline
+    Constraints & $\wedge, \vee, -$\\
+    \hline
+    Quantifiers & $\exists, \forall$\\
+    \hline
+    Bound Variables & $\exists x, \forall x$\\
+    \hline
+    Free Variables & \textit{No quantifiers placed upon them}\\
+    \hline
+  \end{tabular}
+\end{center}
+
+When a query is without free variables, it is referred to as a \textit{boolean query}.
+
+A query is \textit{safe} when it is known to give a finite answer across all databases.
+
+The \textit{active domain} of a table is the set of all its constants.
+
+\section{Translations}
+
+\subsection{Relational Algebra to Relational Calculus}
+
+\subsubsection{Base Relation}
+
+$R$ becomes $R(x_1, \ldots, x_n)$
+
+\subsubsection{Selection}
+
+$\sigma_{\theta} R$ becomes $R(x_1, \ldots, x_n) \wedge \theta$.
+
+\subsubsection{Projection}
+
+Say we have a relation $R$ with attributes $x_1, x_2$.
+
+This becomes:
+
+\[ \exists x_2\, R(x_1, x_2)\]
+
+This is because attributes that are \underline{not} projected, \textit{become quantified}.
+
+As we only want to project $x_1$, we quantify $x_2$, effectively elimanting it.
+
+\subsubsection{Cartesian Product}
+
+$R \times S$ becomes $R(x_1, \ldots, x_n) \wedge S(y_1, \ldots, y_n)$.
+
+As all variables are \textit{distinct}, output has only $m + n$ attributes.
+
+\subsubsection{Union}
+
+$R \cup S$, given that they are \textit{union-compatible} becomes $R(x_1, \ldots, x_n) \vee S(x_1, \ldots, x_n)$.
+
+\subsubsection{Difference}
+
+$R - S$ becomes $R(x_1, \ldots, x_n) \wedge \neg S(x_1, \ldots, x_n)$.
 
 \end{document}
