@@ -15,7 +15,7 @@ basicstyle=\footnotesize\ttfamily
 \def\biconditional{$\leftrightarrow\;$}
 
 \begin{document}
-\pagestyle{empty}
+\pagestyle{headings}
 
 % Title declaration
 \title{Database Systems Notes}
@@ -203,9 +203,13 @@ In other words, a \textit{foreign key} is a tuple that uniquely identifies a row
 
 Intersects with the \textit{Dependencies} section above.
 
+\subsubsection{Superkey}
+
+A column, or set of columns, that can be used to uniquely identify a row within a table.
+
 \subsubsection{Candidate Keys}
 
-A column or set of columns that can be used to \textit{uniquely identify} all records within a database.
+A column or set of columns that is \textit{minimal} and can be used to \textit{uniquely identify} all records within a database.
 
 \subsubsection{Primary Keys}
 
@@ -245,10 +249,6 @@ SQL allows for a key to be declared as \texttt{UNIQUE}, and is very similar to t
 How \textit{referential integrity} is enforced in SQL.
 
 Say we have two tables created, we can declare a \textit{foreign key} by stating that some attribute or attributes \texttt{REFERENCES} attributes in another table.
-
-\subsubsection{Superkey}
-
-A \textit{candidate key} that can uniquely identify a record within a database and \textit{has been reduced to the minimum number of columns} required to uniquely identify each record.
 
 \filbreak
 \subsection{Aggregate Functions}
@@ -411,8 +411,19 @@ Conflict serialisability is enforced using \textit{precedence graphs}, where eac
 
 If the graph has no cycles, \underline{it is serialisable}. Otherwise, it is not.
 
+\filbreak
 \section{XML: Extensible Markup Language}
 
-XML is both \textit{human} and \textit{machine readable}.
+XML is a format that is both \textit{human} and \textit{machine readable} and describes the structure of data.
+
+XML doesn't define how data should be displayed, rather it provides a \textit{model} for other applications to display it. This means that XML doesn't actually ``\textit{do}'' anything, and depends on some other application to do something with it.
+
+A similar language is HTML, which describes how data looks. XML focuses upon what data actually \textit{is}.
+
+XML allows for a developer to describe things, and ascribe \textit{attributes} to them. 
+
+\subsection{DTD: Document Type Definition}
+
+A DTD is \textit{grammar} that can be used in conjunction with XML documents, dictating which type of data some attribute can hold, what attributes an item has, and so on.
 
 \end{document}
