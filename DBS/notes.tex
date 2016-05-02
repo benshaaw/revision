@@ -106,6 +106,10 @@ All queries have the general format:
 
 \texttt{WHERE} statements allow for tables to be \textbf{joined}.
 
+Two relations can also be joined upon a condition, and are referred to as a \textit{theta-join}. This is denoted as $R \underset{\theta}{\Join} S$. Theta-joins are essentially Cartesian-products with a condition subsequently applied to it, such that:
+
+\[ R \underset{\theta}{\Join} S \equiv \sigma(R \times S) \]
+
 \subsection{Table Management}
 
 \subsubsection{Creating a Table}
@@ -199,9 +203,13 @@ In other words, a \textit{foreign key} is a tuple that uniquely identifies a row
 
 Intersects with the \textit{Dependencies} section above.
 
+\subsubsection{Candidate Keys}
+
+A column or set of columns that can be used to \textit{uniquely identify} all records within a database.
+
 \subsubsection{Primary Keys}
 
-A \textit{primary key} is a column, or collection of columns, that \textit{uniquely identify} all of a table's records. A primary \textit{cannot be null} and must contain a \textit{unique value for each row of data}.
+A \textit{primary key} is a candidate key that \textit{uniquely identify} all of a table's records. A primary \textit{cannot be null} and must contain a \textit{unique value for each row of data}.
 
 This type of key is critical for relational databases to work as a concept. In SQL, the primary key can be defined in two ways.
 
@@ -238,6 +246,10 @@ How \textit{referential integrity} is enforced in SQL.
 
 Say we have two tables created, we can declare a \textit{foreign key} by stating that some attribute or attributes \texttt{REFERENCES} attributes in another table.
 
+\subsubsection{Superkey}
+
+A \textit{candidate key} that can uniquely identify a record within a database and \textit{has been reduced to the minimum number of columns} required to uniquely identify each record.
+
 \filbreak
 \subsection{Aggregate Functions}
 
@@ -251,7 +263,7 @@ Aggregate functions can also affect the way that results are returned.
 
 \subsubsection{Group By}
 
-\texttt{GROUP BY} can sometimes seem to work in an underhanded function. Group by can point out to an aggregate function, on \textit{what basis should attributes be aggregated}.
+\texttt{GROUP BY} can sometimes seem to work in an underhanded way. Group by can point out to an aggregate function, on \textit{what basis should attributes be aggregated}.
 
 For example, say we have a table that details purchases made by customers on a website, and we want to find out how much each customer has spent.
 
@@ -330,5 +342,77 @@ $R \cup S$, given that they are \textit{union-compatible} becomes $R(x_1, \ldots
 \subsubsection{Difference}
 
 $R - S$ becomes $R(x_1, \ldots, x_n) \wedge \neg S(x_1, \ldots, x_n)$.
+
+\section{Database Normalisation}
+
+\textit{Data redundancy} is when the same piece of data is held in two or more separate places. Developers ideally want to be able to update all instances of some piece of data through one central access point, as it becomes an issue when one piece of data becomes inconsistent across several relations.
+
+\textit{Database normalisation} has the aim of minimising data redundancy, when some database schema is reduced into \textit{normal form}.
+
+\subsection{1NF: First Normal Form}
+
+Criteria:
+
+\begin{itemize}
+  \item Repeating groups in a relation are eliminated
+  \item A separate table for each set of related data, identified by a primary key
+\end{itemize}
+
+\subsection{2NF: Second Normal Form}
+
+Criteria:
+
+\begin{itemize}
+\item
+  The table must be in \textit{1NF}
+\item
+  There should be no partial dependencies on any attributes of the primary key
+\end{itemize}
+
+This means that any of these attributes that are not a part of the primary key, but are directly related to that part of the primary key, should be placed in a different table.
+
+For example, if we have a list that consists of \texttt{Manufacturer}, \texttt{Model} and \texttt{Manufacturer Country}; \texttt{Manufacturer Country} should be placed in a different table - because it is not a candidate key, but is directly dependent on \texttt{Manufacturer} - which would leave the relations in \textit{2NF}.
+
+\subsection{3NF: Third Normal Form}
+
+Criteria:
+
+\begin{itemize}
+\item
+  The table must be in \textit{2NF}
+\item
+  Every key that is not a part of a candidate key has a functional dependence on every \textit{key} within the relation
+\end{itemize}
+
+\subsection{BCNF: Boyce-Codd Normal Form}
+
+A slightly stronger version of \textit{3NF}, where all redundancy based on functional dependencies has been removed.
+
+For a relation to be in BCNF, every dependency $X \implies Y$:
+
+\begin{itemize}
+\item 
+  $X \implies Y$ is a \textit{trivial functional dependency} ($Y \subseteq X$)
+\item
+  $X$ is the superkey of the relation
+\end{itemize}
+
+\section{Serialisation}
+
+Given two schedules of transactions, that is read and write operations upon objects in a relation, we say that the two schedules are \textit{conflict-serialisable} if they can be produce the same output if they can be run whilst overlapping, and if they are run sequentially without overlap.
+
+When more than operation is placed upon an item in a relation, we break all the operations in to a list of pairs, such that the sequence \texttt{read(A), write(A), read(A), read(A)} would become:
+
+\texttt{(read(A), write(A)),\\ (write(A), read(A)),\\ (read(A), read(A))}.
+
+Conflicting pairs are \texttt{read-write}, \texttt{write-read} and \texttt{write-write}. 
+
+Conflict serialisability is enforced using \textit{precedence graphs}, where each schedule has a node. An edge is drawn if an action in each schedule conflicts from the preceding action's node to the following action's node.
+
+If the graph has no cycles, \underline{it is serialisable}. Otherwise, it is not.
+
+\section{XML: Extensible Markup Language}
+
+XML is both \textit{human} and \textit{machine readable}.
 
 \end{document}
