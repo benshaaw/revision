@@ -173,6 +173,17 @@ A nested query is also referred to as a \textit{subquery} or a \textit{inner} qu
 
 This allows for a condition to be checked across both the main query, and the sub query.While this can be achieved by using joins, nested queries can be ideal for situations that have complex predicates.
 
+\subsubsection{\texttt{EXISTS}}
+
+This type of subquery tells you whether a given query \textit{returns} any results. This is ideal when the subquery may return a large result set, as it will return true as soon as a result is returned.
+
+\texttt{EXISTS} can be negated using \texttt{NOT EXISTS}
+
+\subsubsection{\texttt{IN}}
+
+Similar to \texttt{EXISTS}, but is ideal when the subquery yields a small result, or in a small static list. This is because instead of reporting whether a result has been returned, it instead directly compares values.
+\texttt{IN} can be negated using \texttt{NOT IN}.
+
 \subsection{Dependencies}
 
 The most common dependencies are \textit{functional} and \textit{inclusion} dependencies.
