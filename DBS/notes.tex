@@ -5,6 +5,8 @@
 \usepackage{parskip}
 \usepackage{newlfont}
 \usepackage{courier}
+\usepackage{tikz}
+\usepackage{tikz-qtree}
 
 \lstset{
 language=sql,
@@ -116,7 +118,7 @@ Two relations can also be joined upon a condition, and are referred to as a \tex
 
 \begin{lstlisting}
   CREATE TABLE name (
-       type name,
+       name type(size),
        .
        .
        .
@@ -158,6 +160,7 @@ Two relations can also be joined upon a condition, and are referred to as a \tex
 \begin{lstlisting}
   DROP TABLE name;
 \end{lstlisting}
+
 
 
 \subsection{Union Compatibility}
@@ -250,6 +253,28 @@ How \textit{referential integrity} is enforced in SQL.
 
 Say we have two tables created, we can declare a \textit{foreign key} by stating that some attribute or attributes \texttt{REFERENCES} attributes in another table.
 
+\subsection{Joins}
+
+\subsubsection{Inner Join}
+
+Similar to a logical \texttt{AND}, only records found in \underline{both} tables will be returned.
+
+\subsubsection{Outer Join}
+
+The inverse to an inner join, an outer join will return records that are \underline{not in both} tables. Similar to a logical \texttt{XOR}.
+
+\subsubsection{Left/Right Join}
+
+Returns all records that are in the left or right table, regardless if there is a record in the opposite table or not. If the is no equivalent equal record in the other table, a value of \texttt{NULL} shall be returned in that field instead.
+
+\subsubsection{Left/Right Outer Join}
+
+Returns all records that are in the left or right table, but does \underline{not} match any record the opposite table.
+
+\subsubsection{Natural Join}
+
+Similar to the natural join found in relational algebra, where the join is based upon common columns in the two tables.
+
 \filbreak
 \subsection{Aggregate Functions}
 
@@ -274,6 +299,14 @@ The following SQL query would suffice:
       FROM sales
       GROUP BY name;
 \end{lstlisting}
+
+\subsection{Cursor}
+
+A temporary portion of memory that used for executing a SQL statement. The set of rows that this statement returns is referred to as the cursor's \textit{active set}.
+
+An \textit{implicit} cursor is used for \texttt{INSERT}, \texttt{UPDATE} and \texttt{DELETE} statements, as well as \texttt{SELECT} statements that return just one row.
+
+An \textit{explicit} cursor is used for \texttt{SELECT} statements that return more than one row.
 
 \section{Relational Calculus}
 
@@ -420,7 +453,7 @@ XML doesn't define how data should be displayed, rather it provides a \textit{mo
 
 A similar language is HTML, which describes how data looks. XML focuses upon what data actually \textit{is}.
 
-XML allows for a developer to describe things, and ascribe \textit{attributes} to them. 
+XML allows for a developer to describe things, and ascribe \textit{attributes} to them. This allows for a tree to be drawn representing the hierarchy.
 
 \subsection{DTD: Document Type Definition}
 
