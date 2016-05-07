@@ -1,11 +1,19 @@
 \documentclass{article}
+\usepackage{listings}
+\lstset{
+  basicstyle=\ttfamily\scriptsize
+}
 \usepackage{parskip}
-\usepackage[margin=2cm]{geometry}
+\usepackage[margin=2.5cm]{geometry}
 \usepackage{hyperref}
+
+% For check marks
+\usepackage{tikz}
+\def\checkmark{\tikz\fill[scale=0.4](0,.35) -- (.25,0) -- (1,.7) -- (.25,.15) -- cycle;}
+
+% Thanks to Angus Pearson for nagging me to fuck about with fonts in XeLaTeX
+
 \usepackage{fontspec}
-
-% Thanks to Angus Pearson for nagging me to fuck about fonts in XeLaTeX
-
 \usepackage{xltxtra}
 
 % PT Serif
@@ -27,6 +35,8 @@ BoldItalicFont=NotoSans-BoldItalic.ttf
 }
 
 \begin{document}
+
+\pagestyle{headings}
 
 \textbf{\Huge Computer Security Notes}\\
 \textit{\footnotesize Found at: \href{http://benjaminshaw.uk}{benjaminshaw.uk}}
@@ -485,8 +495,262 @@ A means of \textit{continuous authentication}, a user's behaviour is monitored. 
 
 \section{Access Control}
 
-\subsection{Access and Information Flow}
+Governs whether or not some user, (\textit{the principal, or subject}) is allowed access to a resources.
+
+\textit{Information flow control} is a similar concept, but instead scrutinises if an object is allowed \textit{to be known to} a principal.
+
+\subsection{Access Operations}
+
+\textit{Access modes} determine that way that an object can be accessed, with \textit{rights} being a\textit{ combination of such modes}.
+
+\filbreak
+\subsubsection{BLP: Bell-LaPadula Model}
+
+A model that enforces confidentiality, it has two access modes: \textit{to observe}, that is examine an object, and \textit{to alter}, that is to change an object.
+
+BLP has the following access rights:
+
+\begin{center}
+  \begin{tabular}{|c|c|c|}
+    \hline
+    & Observe & Alter\\
+    \hline
+    Execute & & \\
+    \hline
+    Read & \checkmark & \\
+    \hline
+    Append & & \checkmark\\
+    \hline
+    Write & \checkmark & \checkmark\\
+    \hline
+  \end{tabular}
+\end{center}
+
+\subsubsection{Mechanisms for Access Control}
+
+Rights are commonly defined by the \textit{access control matrix} that represents \textit{who} has \textit{which} access to \textit{what}.
+
+There is a set $S$ of objects, a set $A$ of operations that create the matrix $M$.
+
+An example matrix would be:
+
+\begin{center}
+  \begin{tabular}{|c|c|c|}
+    \hline
+    & file1.txt & code.sh\\
+    \hline
+    User1 & \{\} & \{ \texttt{read} \}\\
+    \hline
+    User2 & \{ \texttt{read, write, execute}\} & \{ \texttt{read, execute} \}\\
+    \hline
+  \end{tabular}
+\end{center}
+
+\subsubsection{UNIX}
+
+\texttt{UNIX} has three access rights: \texttt{r} for read, \texttt{w} for write, and \texttt{e} for execute.
+
+There are 3 subjects: the \textit{owner}, the \textit{group} and the \textit{world}.
+
+An example of \texttt{UNIX} representing permissions for some file would be:
+
+\texttt{rwxr-----}
+
+The first three characters, \texttt{rwx}, means that the owner can read, write and execute the file. The second, \texttt{r--}, means that the other members of the group can read the file. The final three, \texttt{---}, means that nobody else has any access to the object.
+
+\subsection{Discretionary and Mandatory AC}
+
+\textit{Discretionary} access control means that the \textit{owner} of a resource dictates who may access it, set on a case-by-case basis.
+
+\textit{Mandatory} access control is \textit{system-wide} as per a uniform policy.
+
+\subsection{Multi-Level Security}
+
+A system that has an order of levels, e.g.
+
+\texttt{unclassified $\leq$ confidential $\leq$ secret $\leq$ top secret}
+
+This can express policies meaning that a subject with a slight elevated level of privilege cannot write to an object that has a lower amount required to access it, as this may mean that more privileged information is revealed to those with lower privileges.
+
+But a more flexible policy may be required.
+
+\subsubsection{Security Lattices}
+
+A method of defining a policy of which users can read and write to what levels in a system that utilises multi-level security.
+
+For example, for two subjects \texttt{a} and \texttt{b}, and \texttt{a $\leq$ b}, we would say that b \textbf{dominates} a: \texttt{system low} is the bottom, \textit{dominated} by all others; \texttt{system high} is the top, \textit{dominating} all others.
+
+Say we have two objects that are at differing levels; there is a \textit{minimum} security level for a \textit{subject to access} both.
+
+Now, say we have two subjects that are at differing levels. There is a \textit{maximum} security level for an \textit{object to be} readable by both.
 
 
+\section{Security on the Web}
+
+The idea is that web-side applications should provide the same guarantee of security as of that of a standalone application.
+
+Visiting a website should not be able to gain local file access, or infect your machine with malware. \textit{Sandboxing} and \textit{privilege separation} act as defences against this.
+
+Nor should one site being accessed compromise connections with other sites; achieved by a \textit{same-origin policy}, isolating one accessed site from others.
+
+\subsection{Injection Attacks}
+
+When malicious information is sent to an \textit{interpreter} that can be executed; subsequently causing damage to the host, or providing information that should not be accessible to the attacker.
+
+\subsubsection{Command Injection}
+
+When a script used by the server reads specially crafted input that is then executed as a system command on the victim's side. This can occur when \textit{data} and \textit{code} share the same channel.
+
+For example, a script may read some input from the user then treats it as directly executable code, which is obviously susceptible to abuse.
+
+Input \textit{validation} and \textit{escaping} serve as defences against this type of injection.
+
+\subsubsection{SQL Injection}
+
+The \textit{Structured Query Language} is the most common language utilised by databases, hence its syntax is well known and used by many, many hosts. A poorly secured host that makes use of a database can be severely damaged if SQL code is injected.
+
+Poorly structured code may take user input and directly feed it to its internal SQL interpreter. The interpreter will execute the code that it is given, which may include more code than the developer intended. 
+
+For example, the website may have a field asking for some text input. If this input is not validated, it could include a command for SQL to delete or return some records, which would will be executed when it is passed along to the interpreter.
+
+
+\section{Session Hijacking}
+
+\subsection{Cookies and HTTP}
+
+HTTP is a \textit{stateless} system, but can utilise so that a state can be maintained between client and server. There can be difficulties however, as the server may actually be talking to someone who the cookie does not belong to, if the necessary precautions aren't taken.
+
+A unique identifier between the client and the server can be stolen by an attacker; subsequently allowing the attacker to masquerade as the original client to the server.
+
+There are safeguards against this type of theft.
+
+First of all, cookies \textit{tokens} should not be predictable, and tokens should be refreshed periodically.
+
+\subsection{XSS: Cross-Site Scripting}
+
+Many websites make use of client-side scripting languages, such as \textit{JavaScript} as it provides more power to web developers than the markdown languages such as HTML and CSS.
+
+Cross-site scripting is a type of injection attack, where malicious code is inserted into websites that would otherwise be trusted. These sites can then start serving malicious code to unsuspecting users. As the browser on the user's end thinks that the website is trusted, it has no way of knowing that some of the script code being sent from the website is malicious and executes it regardless. This can possibly give the attacker access to session tokens and cookies that belong to other users.
+
+\subsubsection{Reflected XSS}
+
+Where the malicious script is \textit{reflected} off the web server and then delivered over this \textit{presumed to be trusted} route to the victim. The script can be hidden within an error request or search result for example.
+
+\subsection{CSRF: Cross-Site Request Forgery}
+
+When a user is forced to execute unwanted actions on a web application in which they are currently authenticated, attacking requests to change-state rather than stealing data.
+
+This type tries to take advantage of servers that have predictable structures.
+
+The attacker will craft a URL, and then trick the victim to make a request to the vulnerable server. When the victim accesses the malicious URL, the attacker's website will make the victim's browser access the URL that will execute the unwanted action.
+
+CSRF attacks can be prevented by verifying the origin of the request, and not one that has been referred by another website.
+
+\section{Secure Communications}
+
+\textbf{Confidentiality}: Information shouldn't be revealed to unauthorised entities.
+
+\textbf{Authentication}: To know with certainty the entity that you are communicating with.
+
+\textbf{Anonymity}: The identity of the author of an action should not be revealed.
+
+\textbf{Non-Repudiation}: The author of an action should not be able to deny doing so
+
+\textbf{Integrity}: Data should not be altered in an unauthorised manner during creation or transmission.
+
+\textbf{Unlinkability}: An attacker should not be able to see which services have been provided to a user.
+
+\subsection{Perfect Secrecy}
+
+A cipher satisfies \textit{perfect secrecy} if, for all messages of the same length, for all encrypted messages:
+
+\[ | Pr(E(k, m_1) = c) - Pr(E(k, m_2) = c) | \leq \epsilon \]
+
+In plain English, absolutely no information about the unencrypted message will be revealed by the encrypted message.
+
+\subsection{Symmetric Ciphers}
+
+For some message, you have an encryption algorithm, $E$, and a decryption algorithm, $D$, such that:
+\vspace{.5cm}
+\begin{center}
+  $K$ is some secret key known between the two parties\\
+  $C$ is the encrypted message
+  $M$ is the unencrypted message
+\end{center}
+
+\[ E : K \times M \rightarrow C\]
+\[ D : K \times C \rightarrow M\]
+
+Examples include one-time pads, \texttt{DES} and \texttt{AES}.
+
+\subsubsection{OTP: One-Time Pad}
+
+Assumes that the message, encrypted message, and key are all of the same length.
+
+Either the message or encrypted message, and the key, will be \texttt{XOR}'d to produce the desired output.
+
+\begin{figure}[!htb]
+  \begin{minipage}{0.5\textwidth}
+    \begin{tabular}{c}
+      \textbf{Encryption}
+      \begin{lstlisting}
+        k | 0 1 1 0 1 0 0 1
+        m | 1 0 0 0 1 0 1 1
+        -   - - - - - - - -
+        c | 1 1 1 0 0 0 1 0
+      \end{lstlisting}
+    \end{tabular}
+  \end{minipage}%
+  \begin{minipage}{0.5\textwidth}
+    \begin{tabular}{c}
+      \textbf{Decryption}
+      \begin{lstlisting}
+        k | 0 1 1 0 1 0 0 1
+        c | 1 1 1 0 0 0 1 0
+        -   - - - - - - - -
+        m | 1 0 0 0 1 0 1 1
+      \end{lstlisting}
+    \end{tabular}
+  \end{minipage}%
+\end{figure}
+
+Drawbacks of the OTP is that they key \textit{must} be the same length as that of the message, and that OTPs do not guarantee \textit{true} randomness.
+
+\subsubsection{Stream Cipher}
+
+Similar to the One-Time Pad, but instead of using a really random key, a \textit{psuedo-random} key is used. That is, a key that \textit{looks} random, but is not random in reality.
+
+The stream cipher functions in a way similar to that of the one-time pad, but can utilise a more convenient key which can differ in length from that of the message.
+
+\subsection{Asymmetric Ciphers}
+
+For some message, you have a key generation algorithm, $G$, as well as encryption and decryption algorithms, $E$ and $D$ respectively.
+
+\vspace{.5cm}
+\begin{center}
+  $K$ is some secret key known between the two parties\\
+  $C$ is the encrypted message
+  $M$ is the unencrypted message
+\end{center}
+
+\[ E : K \times M \rightarrow C\]
+\[ D : K \times C \rightarrow M\]
+\[ G : K \times K \]
+
+The decryption key is secret, or \textit{private}, whereas the encryption key is \textit{public}.
+
+An example would be \texttt{RSA}.
+ 
+There is also use for \textit{digital signatures}, which is the production of another key, the \textit{verification key}, which is know to everyone but differs from the signing key. This can deduct whether or not some message has been encrypted under some given key.
+
+\subsection{Hashes}
+
+An algorithm $H$, that takes a message $H$ and produces a unique hash value $D$, such that:
+
+\[ H : M \rightarrow D\]
+
+Hashing algorithms should be \textit{pre-image resistant}, where it should be impossible to take the output of the hashing function and determine the original message fed to the function. There should also be \textit{collision resistance}, where it should be extremely difficult to have two different messages produce the same hash.
+
+Hashing function examples would be \texttt{MD5} and \texttt{SHA-1}.
 
 \end{document}
