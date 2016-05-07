@@ -77,8 +77,9 @@ A user will expect that services be available to them. A common attack
 is denying users this privilege. Denial of Service (DOS) attacks or
 malware are two common ways of attacking availability.
 
-\section{Cyber Security Essentials}
 \filbreak
+\section{Cyber Security Essentials}
+
 \subsection{Secure Configuration}
 
 \textbf{Principles:}
@@ -184,5 +185,308 @@ Internet-facing devices should make use of malware protection software that cont
 \item 
   Prevent connections to known malicious website
 \end{itemize}
+
+\section{Network Security Threats}
+
+\textbf{Types of Threat:}
+\begin{itemize}
+\item 
+  \textbf{Interception}
+  \subitem
+  Unauthorised viewing of information
+\item 
+  \textbf{Modification}
+  \subitem
+  Unauthorised changing of information
+\item 
+  \textbf{Fabrication}
+  \subitem
+  Unauthorised creation of information
+\item 
+  \textbf{Interruption}
+  \subitem
+  Prevention of authorised access
+\end{itemize}
+
+\subsection{Man-in-the-Middle}
+
+When communications between two devices is intercepted and changed by a third party intruder.
+
+Man-in-the-middle is not necessarily an attack, as VPNs are man-in-the-middle by nature.
+
+\subsection{Denial of Service}
+
+When valid users are prevented from accessing a service.
+
+\subsubsection{SYN Flooding}
+
+When a large amount of \textit{SYN requests} are sent to the victim with the intention of overloading them. SYN packets are the first packet sent in a TCP handshake.
+
+The attacker would send many of these packets without acknowledging any of the replies to the point that the receiver can handle no more. 
+
+SYN flooding uses a lot of the attacker's bandwidth, and is also traceable if sent from their own IP. An ideal type of attack against a small target but tends not to be affective against larger targets.
+
+SYN flooding in \textit{conjunction with TCP source spoofing} makes it harder to trace the original attacker and ACKs will be directed to some other address.
+
+\subsubsection{Distributed Denial of Service}
+
+The same concept as a denial of service attack, but multiple systems flood the intended victim.
+
+\subsubsection{Smurfing}
+
+An example of \textit{distributed} denial of service attack.
+
+Exploits the \textit{Internet Control Message Protocol} (ICMP) specification of \textit{pings}, which allow for hosts to indicate that they are alive.
+
+A forged ping packet is constructed with the source IP address as the victim's IP, and is sent to a \textit{smurf amplifier}, subsequently that will swamp the target with replies.
+
+A smurf amplifier is a poorly configured host that will not anticipate this attack, and will reply to the forged host.
+
+\subsection{Domain Name Service Attacks}
+
+Utilising the DNS system, where a DNS record will be maliciously altered to set up a man-in-the-middle attack, or prevent access to some URL.
+
+\filbreak
+\section{Network Defences}
+
+\subsection{Firewalls}
+
+Firewalls \textit{divide} the untrusted exterior of the network and the trusted interior of the network; they are said to operate on the \textit{Network} layer, or the 3rd layer, of the IP stack.
+
+Firewalls either run on dedicated hardware or as a software package such as \texttt{iptables}. Hardware firewalls operate faster and act as a physical divider, whereas software is easier to deploy.
+
+Firewalls operate upon a \textit{set of rules}. These rules dictate if it allows or denies any given traffic.
+
+\subsubsection{Packet Filtering}
+
+The simplest task of a firewall, compares packet headers to the pre-defined rules.
+
+However, this does not detect forged packets and requires a large and well-defined set of rules to function well.
+
+\subsubsection{Stateful Inspection}
+
+Remembers state between packets received, unlike a packet filter.
+
+This allows it to filter attacks that utilise the scanning of many ports on a host, as it would detect the high number of packets from one source. With this piece of information, it could add to the firewall rules to block this specific host.
+
+\subsubsection{Application Proxy}
+
+A type of man-in-the-middle attack, as it screens messages received at the \textit{Application} layer of the IP stack.
+
+This allows for the firewall to block application requests, such as emails containing certain words or confidential information from a database leaving the network.
+
+\subsection{Intrusion Detection Systems}
+
+Designed to detect a potential intrusion \textit{in progress}.
+
+IDSs will monitor the network for behaviour similar to that of known attacks and raise the alert when it does so.
+
+There is a fine line to walk as IDS needs to be sensitive to detect attacks, as they are not prone to being as blatant as possible; however, too many false alarms can soon prove to a be a liability.
+
+\subsection{Signature-based}
+
+Utilises \textit{pattern matching}, where a pattern is provided in advance.
+
+This method does not anticipate new types of attack but has a high level of accuracy which is effective for well-known and common types of attack.
+
+\subsection{Heuristic-based}
+
+The method builds a model of what \textit{normal} behaviour looks like. This allows for possible anticipation of new types of attack.
+
+However, it can take a long time to build this model and is susceptible to false positives.
+
+\section{Security Amongst Users}
+
+A large number of attacks occur due to user error, so it is in the best interests of organisations to make sure that users are able to identify attempts to fool them.
+
+\subsection{Phishing Attacks}
+
+A type of attack that \textit{baits} the user into interacting with a malicious object. This can be done by impersonating a person or organisation that the user may trust beforehand.
+
+This type of attack is usually delivered by email to try and get the user to go to an illegitimate link that will provide the user with malware.
+
+\textit{Spear phishing} is used against a small subset of users, but allows for the attacker to craft the attack in a way that is more likely to trick the user.
+
+\textit{Whaling} is an attempt to use a phishing attack against a financially wealthy victim.
+
+Earmarks of a phishing attack are hyper links to an address that is designed to look like something else, e.g. \textit{www.microsoftrewards.legitwebsite.com}, or emails that come with attachments with titles designed to lure the user to open it.
+
+\subsection{SSL/Malware Warnings}
+
+\textit{Secure Socket Layer} is the technology that \texttt{HTTPS} is built upon, and allows for secure communications between two parties.
+
+SSL allows for validation that the two parties are who they say they are and prevents a man-in-the-middle from reading packet contents, as they are encrypted.
+
+Most modern web browsers will alert users when there are \textit{certificate mismatches}, which can be an indication that the website is trying to mimic another's identity.
+
+Many modern browsers will also look up the URL that the user is trying to visit, and cross-reference this with a blacklist of \textit{known malicious websites}. If this check comes back as true, then a warning shall be displayed to users indicating that the site they are trying to visit has been knwon to distribute malicious content.
+
+Whilst this can be effective against users visiting \textit{new} websites, studies have shown that users are likely to ignore such warnings if they are trying to visit a website that they have been to before. This may be because users think that the blacklist check is at error, or that they can trust the source of the link that they are following.
+
+Roughly \textit{one and a half percent} of these warnings are false-positives.
+
+\subsection{Meaningful Warnings}
+
+It is obviously in the best interests of network administrators and developers to have warning messages that are understandable and effective when displayed to a user.
+
+\subsubsection{NEAT}
+
+\begin{itemize}
+\item \textbf{Necessary}
+  \subitem
+  Is there a need for this user to see or decide upon the warning?
+\item \textbf{Explained}
+  \subitem
+  Is all information provided for the user to make an informed decision?
+\item \textbf{Actionable}
+  \subitem
+  Is there a set of steps that the user can take to make the correct decision?
+\item \textbf{Tested}
+  \subitem
+  Have you tested upon someone who would be an expected user, both in benign and malicious situations?
+\end{itemize}
+
+\filbreak
+\subsubsection{SPRUCE}
+
+\begin{itemize}
+\item \textbf{Source}
+  \subitem
+  Ensure the source of who is asking for the decision is made clear
+\item \textbf{Process}
+  \subitem
+  Provide the user with actionable steps to make a good decision
+\item \textbf{Risk}
+  \subitem
+  Explain the risks of making the wrong decision to the user
+\item \textbf{Unique User Knowledge}
+  \subitem
+  Tell the user the information that \textit{they} bring to the decision
+\item \textbf{Choices}
+  \subitem
+  List available options, \textit{clearly recommending one}
+\item \textbf{Evidence}
+  \subitem
+  Highligh information the user should include or exclude whilst making the decision
+\end{itemize}
+
+
+\section{Overflow Attacks}
+
+\subsection{Vulnerabilities in C}
+
+Many of the original C functions are susceptible to attacks, as they look for the \textit{null byte}, \verb|'\0'|. The attacker can craft an input that doesn't contain the null byte, resulting in the vulnerable code to keep on reading input in. Such fundamentally vulnerable functions are \texttt{strcpy} and \texttt{scanf}.
+
+\subsection{Buffer Overflows}
+
+When executable code is injected into areas of memory earmarked for code execution, by overflowing areas that are, \textit{most likely poorly}, designed to take input.
+
+The malicious code will then be pushed into some other area and possibly change the flow of execution that the program follows.
+
+\subsubsection{Shell Injection}
+
+The aim of this type of attack is to \textit{spawn a shell}, which would give the attacker general access to the victim's system.
+
+\subsection{Integer Overflows}
+
+When an attempt is made to store a value greater than the maximum value an integer can hold.
+
+Poorly implemented code is susceptible to an attack using such a method as it may result in length checks failing to terminate.
+
+\subsection{Formatted String Exploits}
+
+If an attacker is able to ascertain what \textit{format} a program is expecting to receive, they can craft some input that will directly load malicious code into memory.
+
+\subsection{Defences Against Overflow Attacks}
+
+\subsection{Stack Canaries}
+
+Named after the canaries used in mines to detect carbon monoxide leaks in deep mines, they are used to detect when an overflow has caused some data within the stack to be overwritten.
+
+The \textit{stack canary} will be placed just before a return pointer. Before execution, the canary will be checked if it still present before the pointer, as to overwrite the pointer, the canary must be overwritten too.
+
+If the canary is not present, the code will not be executed.
+
+Canaries can hold random values calculated at the start of the process, or can hold termination values such as the \texttt{NULL} byte.
+
+\subsection{Make Stack and Heap Non-Executable}
+
+Prevention of overflowing code being executed, as the range it is within is not executed. However, the code can still be executed by using some of the \textit{system calls} found within \texttt{libc}.
+
+\subsection{Address Space Layout Randomisation}
+
+Standard libraries are placed in randomly allocated, non-standard locations. This prevents attackers from directly pointing to where a system library call may usually be.
+
+\section{Authentication}
+
+To verify a fact about an entity before it can be allowed to execute some action. This can be achieved by requiring something they \textit{know}, \textit{are} or \textit{have}.
+
+\subsection{Multifactor Authentication}
+
+An authentication process that requires more than one factor; examples being the \textit{chip} and \textit{pin} within your bank card.
+
+\subsection{Passwords}
+
+The most popular method of authentication, a \textit{password} is a character string known to the user and system. They are easy to store, enter and require no special equipment whilst being easily scalable.
+
+\subsection{Password Entropy}
+
+The problem is different passwords have differing levels of \textit{safety}.
+
+A bad password would be one that has low \textit{entropy}, or predictable in other words. It is commonly found that users use a common string, such as \texttt{'123456789'}, or an easily identifiable trait about their self, such as their name or date of birth.
+
+A good password contains a wider range of characters, such as special characters and mixed cases.
+
+A way to combat this is utilising \textit{machine generated passwords}. A well made program can create passwords that are much harder to guess, but tend to be harder for a human to remember. Algorithms have been created to create passwords that are \textit{pronounceable}, increasing the likelihood of a human being able to remember it.
+
+\subsection{Protecting Passwords}
+
+Passwords are rendered useless if an attacker is able to compromise the server and learn it that way. There are a number of mechanisms designed to keep passwords safe in the instance that the server has been compromised.
+
+\subsubsection{Hashing}
+
+A \textit{good} hashing function translates some input to some unique output in a way that is hard to determine the underlying function itself.
+
+This means that the server only stores \textit{hashes}, instead of the plain-text passwords. Even if the hashes were obtained, they would be meaningless to the attacker.
+
+A method called \textit{salting} is used as additional input to further increase the security of hashing. This means that for one string as input but a set of different \textit{salts}, the output would be different for each salt.
+
+This can serve as a protection mechanism against \textit{brute force attacks}. If a server is compromised, the attacker could continuously create a number of passwords with the hashing function to figure out the mapping between inputs and outputs. Salting makes this far more difficult to break the hashing function as it would need to be done for \textit{each} salt alongside the hashing function.
+
+\subsubsection{Lockout}
+
+Another brute force attack is to utilise make a massive number of guesses. This takes advantage of the fact that many user-defined passwords are predictable. An attacker can guess many times against an unsecured authentication system and correctly guess the password in a minuscule amount of time if the password has a low enough entropy.
+
+The idea of a \textit{lockout} is to limit the amount guesses that the attacker has before they are prevented from another attempt, or requiring another factor that they may not have.
+
+\subsection{Keys}
+
+Accompanies the concept of using something you \textit{have} as a means of authentication. Like having a key to unlock a physical doors, keys are also used within digital authentication.
+
+\subsubsection{Key Fob}
+
+A \textit{key fob} has a securely generated number that must be provided alongside the password as a means of two factor authentication.
+
+\subsubsection{Public/Private Pair}
+
+A pair of keys, one of which is \textit{private}, the other which is \textit{public}. A message that one locks and the other unlocks, and vice versa.
+
+\subsection{Biometric \& Behaviour}
+
+To accommodate the idea of something you \textit{are} as a method of authentication.
+
+\subsubsection{Fingerprint Readers}
+
+Fingerprints are \textit{nearly unique} to each person, but can sometimes be difficult to read or, more akin to Cold War antics, can be destroyed. They can also never be changed, which is severely detrimental in the event that they are somehow obtained.
+
+\subsubsection{User Behaviour}
+
+A means of \textit{continuous authentication}, a user's behaviour is monitored. A user's typing patterns is something that is hard to mimic, but this can suffer from real world events such as the user being injured.
+
+\section{Access Control}
+
+\subsection{Access and Information Flow}
+
+
 
 \end{document}
