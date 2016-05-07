@@ -1,0 +1,161 @@
+\documentclass{article}
+\usepackage{parskip}
+\usepackage[margin=2cm]{geometry}
+\usepackage{hyperref}
+\usepackage{fontspec}
+
+% Thanks to Angus Pearson for nagging me to fuck about fonts in XeLaTeX
+
+\usepackage{xltxtra}
+
+% PT Serif
+\setromanfont[
+BoldFont=PTF75F.ttf,
+ItalicFont=PTZ56F.ttf,
+BoldItalicFont=PTF76F.ttf,
+]{PTF55F.ttf}
+
+% Noto Sans
+\setsansfont[
+BoldFont=NotoSans-Bold.ttf,
+ItalicFont=NotoSans-Italic.ttf,
+BoldItalicFont=NotoSans-BoldItalic.ttf
+]{NotoSans-Regular.ttf}
+
+\hypersetup{
+  colorlinks = false
+}
+
+\begin{document}
+
+\textbf{\Huge Computer Security Notes}\\
+\textit{\footnotesize Found at: \href{http://benjaminshaw.uk}{benjaminshaw.uk}}
+
+\section{Basics}
+
+\subsection{A Definition of Security}
+
+\textbf{Confidentiality}
+
+Ensure that assets are accessed only by authorised parties.
+
+\textbf{Integrity}
+
+Assets can only be modified by authorised parties, or by authorised
+means.
+
+\textbf{Availability}
+
+Assets are only accessible to authorised parties at the appropriate
+times.
+
+\textbf{Accountability}
+
+Actions are traceable to those responsible
+
+\textbf{Authentication}
+
+User/data origin accurately identifiable
+
+\subsection{Security Countermeasures}
+  
+\textbf{Prevention}
+
+Stop security breaches via system design and defences
+
+\textbf{Detection}
+
+If a breach \underline{does} occur, detect it.
+
+\textbf{Response}
+
+A plan utilised when a breach is detected.
+
+\subsection{Denial of Availability}
+
+A user will expect that services be available to them. A common attack
+is denying users this privilege. Denial of Service (DOS) attacks or
+malware are two common ways of attacking availability.
+
+\section{Cyber Security Essentials}
+\filbreak
+\subsection{Secure Configuration}
+
+\textbf{Principles:}
+
+Devices on a network should be configured such that they minimise the
+number of inherent vulnerabilities.
+
+Default settings can \textit{often} be insecure, which includes
+default passwords.
+
+\textbf{Actions:}
+
+\begin{itemize}
+\item
+  Remove unnecessary user accounts, such as the \textit{Admin}
+  account found on Windows XP installs.
+\item
+  Changing the default password
+\item 
+  Removal of unnecessary software
+\item 
+  Firewall software should regulate the incoming/outgoing connections on a device
+\end{itemize}
+
+\subsection{Boundary Firewalls \& Internet Gateways}
+
+\textbf{Principles:}
+
+Devices should be protected against unauthorised access and disclosure.
+
+Firewalls are the first line of defence and can stop attacks before they even reach the network.
+
+\textbf{Actions:}
+
+\begin{itemize}
+\item 
+  Change default passwords
+\item 
+  Rules should be scrutinised before they are applied
+\item 
+  Unapproved services should be blocked by a rule
+\item 
+  Obsolete rules should be purged
+\item 
+  Firewall administration tools should not be accessible from outwith the network
+\end{itemize}
+
+\subsection{Access Control and Privilege Management}
+
+\textbf{Principles:}
+
+User accounts should have the minimum amount of privileges, with extended privileges awarded upon authorisation.
+
+A compromised account with high levels of access can lead to a lot of damage.
+
+\textbf{Actions:}
+
+\begin{itemize}
+\item 
+  Account creation should be subjected to an approval process
+\item 
+  Administration accounts should only be used for legitimate administration purposes and \underline{not} activities that can be achieved with a standard account
+\item 
+  Elevated privilege accounts should require password changes periodically
+\item 
+  Users should be authenticated before being granted access to devices and applications
+\item 
+  Elevated accounts should be used when no longer required
+\end{itemize}
+
+\subsection{Patch Management}
+
+\textbf{Principles:}
+
+Remove unnecessary vulnerabilities by keeping software up-to-date.
+
+\subsection{Malware Protection}
+
+
+\end{document}
