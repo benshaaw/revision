@@ -3,6 +3,8 @@
 \lstset{
   basicstyle=\ttfamily\scriptsize
 }
+\usepackage{graphicx}
+\graphicspath{{.}}
 \usepackage{parskip}
 \usepackage{amsmath}
 \usepackage[margin=2.5cm]{geometry}
@@ -815,6 +817,39 @@ Third, each submodule has the same combination of operations that permute its in
 Finally, the ciphertext is transformed once again, in a fashion similar to the first step, and produces the ciphertext output.
 
 It is the same process to decrypt the ciphertext if in possession of the key. Providing DES with the ciphertext and they key will produce the plaintext as output.
+
+\textit{However}, DES is susceptible to brute force attacks. An \textit{exhaustive search}, over the key space, can be completed in $2^{56}$ time.
+
+\textbf{\underline{AES: Advanced Encryption Standard}}
+
+Intended as the successor to DES.
+
+Makes use of a block size of 128 bits, and the key size is either 128, 192 or 256 bits.
+
+\subsubsection{Using Block Ciphers}
+
+Block ciphers offer different \textit{modes of operation}, which define the fundamental behaviour of the block cipher.
+
+\textbf{\underline{ECB: Electronic Code Book}}
+
+The message $M$ is divided into blocks, with each block being encrypted with key $K$ separately. No interaction takes place between each block being encrypted.
+
+The main issue with this method is that it doesn't hide \textit{patterns} well at all, as identical plaintext blocks produce identical ciphertext blocks.
+
+\begin{figure}[htb!]
+  \begin{minipage}{0.5\linewidth}
+    \centering
+    \includegraphics[scale=0.4]{tux.jpg}\\
+    \textit{Before encryption}
+  \end{minipage}
+  \begin{minipage}{0.5\linewidth}
+    \centering
+    \includegraphics[scale=0.4]{tuxecb.jpg}\\
+    \textit{After encryption using ECB}
+  \end{minipage}
+\end{figure}
+
+\textbf{\underline{}}
 
 \subsection{Asymmetric Ciphers}
 
