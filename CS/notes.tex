@@ -1,8 +1,7 @@
 \documentclass{article}
 \usepackage{listings}
 \lstset{
-  basicstyle=\ttfamily\scriptsize
-}
+  basicstyle=\ttfamily\scriptsize }
 \usepackage{graphicx}
 \graphicspath{{.}}
 \usepackage{parskip}
@@ -11,31 +10,24 @@
 \usepackage{hyperref}
 
 % For check marks
-\usepackage{tikz}
-\def\checkmark{\tikz\fill[scale=0.4](0,.35) -- (.25,0) -- (1,.7) -- (.25,.15) -- cycle;}
+\usepackage{tikz} \def\checkmark{\tikz\fill[scale=0.4](0,.35) --
+  (.25,0) -- (1,.7) -- (.25,.15) -- cycle;}
 
-% Thanks to Angus Pearson for nagging me to fuck about with fonts in XeLaTeX
+% Thanks to Angus Pearson for nagging me to fuck about with fonts in
+% XeLaTeX
 
-\usepackage{fontspec}
-\usepackage{xltxtra}
+\usepackage{fontspec} \usepackage{xltxtra}
 
 % PT Serif
-\setromanfont[
-BoldFont=PTF75F.ttf,
-ItalicFont=PTZ56F.ttf,
-BoldItalicFont=PTF76F.ttf,
-]{PTF55F.ttf}
+\setromanfont[ BoldFont=PTF75F.ttf, ItalicFont=PTZ56F.ttf,
+BoldItalicFont=PTF76F.ttf, ]{PTF55F.ttf}
 
 % Noto Sans
-\setsansfont[
-BoldFont=NotoSans-Bold.ttf,
-ItalicFont=NotoSans-Italic.ttf,
-BoldItalicFont=NotoSans-BoldItalic.ttf
+\setsansfont[ BoldFont=NotoSans-Bold.ttf,
+ItalicFont=NotoSans-Italic.ttf, BoldItalicFont=NotoSans-BoldItalic.ttf
 ]{NotoSans-Regular.ttf}
 
-\hypersetup{
-  colorlinks = false
-}
+\hypersetup{ colorlinks = false }
 
 \begin{document}
 
@@ -758,6 +750,7 @@ Either the message or encrypted message, and the key, will be \texttt{XOR}'d to 
 
 Drawbacks of the OTP is that they key \textit{must} be the same length as that of the message, and that OTPs do not guarantee \textit{true} randomness.
 
+\filbreak
 \subsubsection{Stream Cipher}
 
 Similar to the One-Time Pad, but instead of using a really random key, a \textit{psuedo-random} key is used. That is, a key that \textit{looks} random, but is not random in reality.
@@ -849,28 +842,46 @@ The main issue with this method is that it doesn't hide \textit{patterns} well a
   \end{minipage}
 \end{figure}
 
-\textbf{\underline{}}
+\textbf{\underline{CBC: Cipher Block Chaining}}
+
+Introduces the \textit{initialisation vector}.
+
+The first block and the IV are \texttt{XOR}'d, then fed to the block cipher with a key $K$, producing the first block of the ciphertext.
+
+This block of ciphertext is then \texttt{XOR}'d with the next block of plain text, and once again fed to the block cipher. This continue is represented until the final block of cipher text is created.
+
+The downside of this is that encryption must be sequential.
+
+\textbf{\underline{CTR: Counter}}
+
+Turns a block cipher \textit{into a stream cipher}.
+
+CTR makes use of a function that produces \textit{successive values} which are then fed to the cipher, \texttt{XOR}'d with the plaintext which produces the ciphertext.
 
 \subsection{Asymmetric Ciphers}
 
-For some message, you have a key generation algorithm, $G$, as well as encryption and decryption algorithms, $E$ and $D$ respectively.
+For some message, you have a key generation algorithm, $G$, as well as
+encryption and decryption algorithms, $E$ and $D$ respectively.
 
 \vspace{.5cm}
 \begin{center}
   $K$ is some secret key known between the two parties\\
-  $C$ is the encrypted message
-  $M$ is the unencrypted message
+  $C$ is the encrypted message $M$ is the unencrypted message
 \end{center}
 
 \[ E : K \times M \rightarrow C\]
 \[ D : K \times C \rightarrow M\]
 \[ G : K \times K \]
 
-The decryption key is secret, or \textit{private}, whereas the encryption key is \textit{public}.
+The decryption key is secret, or \textit{private}, whereas the
+encryption key is \textit{public}.
 
 An example would be \texttt{RSA}.
  
-There is also use for \textit{digital signatures}, which is the production of another key, the \textit{verification key}, which is know to everyone but differs from the signing key. This can deduct whether or not some message has been encrypted under some given key.
+There is also use for \textit{digital signatures}, which is the
+production of another key, the \textit{verification key}, which is
+know to everyone but differs from the signing key. This can deduct
+whether or not some message has been encrypted under some given key.
 
 \subsection{Hashes}
 
@@ -882,6 +893,37 @@ Hashing algorithms should be \textit{pre-image resistant}, where it should be im
 
 Hashing function examples would be \texttt{MD5} and \texttt{SHA-1}.
 
+\subsection{OWF: One-Way Functions}
 
+A function $f$ is one-way if there is no efficient algorithm that can compute the function's domain given its co-domain.
+
+The multiplication of two different primes is an OWF, but the successor function is not an OWF.
+
+\subsection{CRF: Collision-Resistant Functions}
+
+A function $f$ is collision resistant if there is no efficient algorithm that can find two messages, $m_1, m_2$ where $f(m_1) = f(m_2)$.
+
+\subsection{Hashing Function}
+
+A \textit{cryptographic hash function} $H : M \rightarrow T$ must satisfy four properties:
+
+\begin{itemize}
+\item
+  $|M| > |T|$
+\item
+  easy to compute has for any given message
+\item
+  hard to retrieve a message from its hashed value (OWF)
+\item
+  hard to find two different messages with the same hash value (CRF)  
+\end{itemize}
+
+Hashing functions allow for participants to commit to some \textit{hashed} value without revealing the original message, useful for electronic voting. Also useful for verifying integrity of a file or password.
+
+\subsection{MAC: Message Authentication Codes}
+
+A short piece of information that is used to \textit{authenticate} a message.
+
+A MAC function take a key and a message as input, and outputs a \textit{MAC tag}. The value protects both \textit{integrity} and \textit{authenticity} of the message, as any changes to the content are detected.
 
 \end{document}
