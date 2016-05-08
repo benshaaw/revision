@@ -4,6 +4,7 @@
   basicstyle=\ttfamily\scriptsize
 }
 \usepackage{parskip}
+\usepackage{amsmath}
 \usepackage[margin=2.5cm]{geometry}
 \usepackage{hyperref}
 
@@ -380,7 +381,6 @@ It is obviously in the best interests of network administrators and developers t
   Highligh information the user should include or exclude whilst making the decision
 \end{itemize}
 
-
 \section{Overflow Attacks}
 
 \subsection{Vulnerabilities in C}
@@ -409,7 +409,7 @@ If an attacker is able to ascertain what \textit{format} a program is expecting 
 
 \subsection{Defences Against Overflow Attacks}
 
-\subsection{Stack Canaries}
+\subsubsection{Stack Canaries}
 
 Named after the canaries used in mines to detect carbon monoxide leaks in deep mines, they are used to detect when an overflow has caused some data within the stack to be overwritten.
 
@@ -419,11 +419,11 @@ If the canary is not present, the code will not be executed.
 
 Canaries can hold random values calculated at the start of the process, or can hold termination values such as the \texttt{NULL} byte.
 
-\subsection{Make Stack and Heap Non-Executable}
+\subsubsection{Make Stack and Heap Non-Executable}
 
 Prevention of overflowing code being executed, as the range it is within is not executed. However, the code can still be executed by using some of the \textit{system calls} found within \texttt{libc}.
 
-\subsection{Address Space Layout Randomisation}
+\subsubsection{Address Space Layout Randomisation}
 
 Standard libraries are placed in randomly allocated, non-standard locations. This prevents attackers from directly pointing to where a system library call may usually be.
 
@@ -660,6 +660,46 @@ CSRF attacks can be prevented by verifying the origin of the request, and not on
 
 \textbf{Unlinkability}: An attacker should not be able to see which services have been provided to a user.
 
+\subsection{Cryptography Primitives}
+
+\subsubsection{LFSR: Linear Feedback Shift Register}
+
+A \textit{shift register} that takes its input as the output of the previous sate.
+
+For example, with a 4 bit stream \texttt{1101}, the last two bits would be taken, \texttt{01}. We would then \texttt{XOR} these two bits, which would produce \texttt{1}. This is then placed at the front of the register, shifting the bits currently in the register to the right.
+
+\begin{center}
+  \begin{tabular}{c}
+    \begin{lstlisting}
+      0 XOR 1 = 1
+      -----------
+       1 -> 1101
+       1110 -> 1   # this bit is popped
+                   off of the register
+    \end{lstlisting}
+  \end{tabular}
+\end{center}
+
+\subsubsection{CSS: Content Scrambling System}
+
+Makes use of \textit{LSFR} with a key size of 40 bits, used on \textit{DVD-Video}.
+
+\textbf{Initialisation:}
+
+A 17-bit LSFR is initialised as the concatenation of 1 and the first 16 bits of the key.
+
+A second, 25-bit LSFR is initialised as the concatenation of 1 and the remaining 24 bits of the key,
+
+\textbf{Action:}
+
+We take the sum of the output of two LSFRs plus any remainder from the previous, modulo 256. This produces a byte of output.
+
+\textbf{Flaws:}
+
+As the video encoding used in DVD-Video is \textit{MPEG-2}, of which the first 290 bytes are plain text. This means that we know the first 20 bytes of the keystream.
+
+Through brute force on the 17-bit LSFR, of which there are $2^{17}$ possibilities, we can deduce the output of the 25-bit LSFR using subtraction.
+
 \subsection{Perfect Secrecy}
 
 A cipher satisfies \textit{perfect secrecy} if, for all messages of the same length, for all encrypted messages:
@@ -722,6 +762,60 @@ Similar to the One-Time Pad, but instead of using a really random key, a \textit
 
 The stream cipher functions in a way similar to that of the one-time pad, but can utilise a more convenient key which can differ in length from that of the message.
 
+\textbf{\underline{RC4}}
+
+A stream cipher used by \textit{HTTPS} and \textit{WEP}.
+
+RC4 consists of two parts: the \textit{Key-Scheduling Algorithm}, and the \textit{Pseudo-Random Generation Algorithm}.
+
+\textbf{Key-Scheduling Algorithm:}
+
+The \textit{KSA} makes use of a \textit{secret key} of a variable length; using it in conjunction with an ordered array of 256 elements, $S$. The aim is to make the array \textit{look} like it has been randomly ordered. After this has been done, the algorithm moves onto the next step.
+
+\textbf{Psuedo-Random Generation Algorithm:}
+
+The \textit{PRGA} increments over the message \underline{and} outputs one byte at a time.
+
+\begin{lstlisting}[language=C]
+  i := 0; j := 0;
+  do{
+    i := (i + 1) mod 256;
+    j := (j + S[i]) mod 256;
+    swap(S[i], S[j]);
+    K := S[(S[i] + S[j]) mod 256];
+    output K;
+  }while(required);
+\end{lstlisting}
+
+So, we have an element of $S$, found at index $i$, which is swapped with another element of $S$, at index $j$. These two elements are summed, with the result \textit{modulo 256} which gives us the next element of the \textit{resulting encrypted array}. At each iteration, we recalculate $i$ and $j$:
+
+\[ i = (i + 1)\:\text{mod}\:256\]
+\[ j = (S[i] + S[j])\:\text{mod}\:256\]
+
+The number of iterations is equal to the length of the \textit{key}.
+
+\subsubsection{Block Ciphers}
+
+A \textit{deterministic algorithm} that operate on fixed-length \textit{blocks} of bits.
+
+The block cipher will take some size bit of plain text, and output the same size of cipher text. A \textit{key} is used to determine the exact transformation between plain and cipher text.
+
+\textbf{\underline{DES: Data Encryption Standard}}
+
+An primitive version of the block cipher that found widespread use after being developed in the 1970s.
+
+\textit{DES} takes a block of size 64 bits from the plaintext, and uses a key of size 64 bits\footnote{DES only makes use of 56 bits of the key, the remaining 8 bits are used to check parity (a check bit)}. The output generated is of size 64 bits.
+
+First, the plain text block is taken in and its order of contents changed.
+
+Second, this transformed plaintext is fed through 16 \textit{submodules}; each submodule takes in a different permutation of size 48 bits, from the key.
+
+Third, each submodule has the same combination of operations that permute its input with the given key, which is then \texttt{XOR}'d with the key and then fed to the next module.
+
+Finally, the ciphertext is transformed once again, in a fashion similar to the first step, and produces the ciphertext output.
+
+It is the same process to decrypt the ciphertext if in possession of the key. Providing DES with the ciphertext and they key will produce the plaintext as output.
+
 \subsection{Asymmetric Ciphers}
 
 For some message, you have a key generation algorithm, $G$, as well as encryption and decryption algorithms, $E$ and $D$ respectively.
@@ -752,5 +846,7 @@ An algorithm $H$, that takes a message $H$ and produces a unique hash value $D$,
 Hashing algorithms should be \textit{pre-image resistant}, where it should be impossible to take the output of the hashing function and determine the original message fed to the function. There should also be \textit{collision resistance}, where it should be extremely difficult to have two different messages produce the same hash.
 
 Hashing function examples would be \texttt{MD5} and \texttt{SHA-1}.
+
+
 
 \end{document}
