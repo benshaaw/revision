@@ -25,23 +25,70 @@ ItalicFont=NotoSans-Italic.ttf, BoldItalicFont=NotoSans-BoldItalic.ttf
 
 \section{Terms}
 
-\textbf{Black-Box Testing}
+\textbf{Black-Box}
 
 Examine the functionality of an application without looking at its inner workings.
 
-\textbf{White-Box Testing}
+\textbf{White-Box}
 
 Testing the internal structures of an application
 
+\textbf{ITF: Independently Testable Features}
+
+Features that should be tested separately.
+
 \section{Functional Testing}
 
-A type of testing that focuses on \textit{what} the system does. Utilising \textit{black-box testing}., test cases are derived on the specification of the component under scrutiny.
+\textit{\underline{Specification-based testing, black-box testing}}
 
-Functional testing does not look at methods of a module, rather it tests a \textit{slice of the whole program's functionality.}
+A type of testing that focuses on \textit{what} the system does. Test cases are derived on the specification of the component under scrutiny.
+
+Functional testing does not look at methods of a module, rather it tests a \textit{slice of the whole program's functionality}; verifying the program by checking it against the specification.
+
+Functional testing is a \textit{systematic} style of testing; trying to select inputs that are \textit{valuable}.
+
+Functional testing is \textit{not random} because its not an effective method of finding issues with the software.
+
+\subsection{Partition Testing}
+
+If we have knowledge that some inputs are more likely to fail than others, we can utilise this to produce more effective testing.
+
+The entirety of possible inputs may be sparse in errors overall, but some regions may be more dense than others.
+
+These partitions are created using the specification. These partitions will be tested, alongside their \textit{boundaries}, which tends to be an area rife with errors.
+
+\subsection{Creating Test Cases}
+
+\begin{enumerate}
+\item
+  Break the specification into \textit{Independently Testable Features}
+\item 
+  Identify \textit{representative} values to be used as input, \textit{e.g. correct values and malformed values}
+\item
+  Create \textit{test specifications} that are a combination of these inputs
+\end{enumerate}
 
 \section{Combinatorial Testing}
 
+Where we identify some \textit{attributes} of an environment, and produce \textit{combinations} of these attributes to be tested.
+
+\subsection{Category-Partition Testing}
+
+Similar to functional testing, makes use of manual identification of values.
+
+\textit{Parameters} (inputs) and \textit{environmental elements} are defined for each ITF - these values are referred to as \textit{categories}.
+
+We generate a number of variables for each of these categories.
+
+Finally we define constraints to remove combinations of variables that would not make sense (\textit{property constraints}), or a combination that we only need to test once, \textit{i.e. one variable renders the meaning of the other variables useless}, known as \textit{single constraints}.
+
+The constraints allow us to reduce the number of test cases that we have, as an unwieldy test suite does not provide much benefit.
+
+
+
 \section{Structural Testing}
+
+
 
 \section{Dependence and Data Flow Models}
 
