@@ -1,14 +1,43 @@
 \documentclass{article}
-\usepackage[margin=3.5cm]{geometry}
+\usepackage[margin=2.5cm]{geometry}
 \usepackage{parskip}
 \usepackage{hyperref}
+
+\usepackage{fontspec}
+\usepackage{xltxtra}
+
+% PT Serif
+\setromanfont[ BoldFont=PTF75F.ttf, ItalicFont=PTZ56F.ttf,
+BoldItalicFont=PTF76F.ttf, ]{PTF55F.ttf}
+
+% Noto Sans
+\setsansfont[ BoldFont=NotoSans-Bold.ttf,
+ItalicFont=NotoSans-Italic.ttf, BoldItalicFont=NotoSans-BoldItalic.ttf
+]{NotoSans-Regular.ttf}
+
+\hypersetup{ colorlinks = false }
+
 
 \begin{document}
 \pagestyle{headings}
 \textbf{\huge Software Testing Notes}\\
 \textit{\footnotesize Found at: \href{http://benjaminshaw.uk}{benjaminshaw.uk}}
 
+\section{Terms}
+
+\textbf{Black-Box Testing}
+
+Examine the functionality of an application without looking at its inner workings.
+
+\textbf{White-Box Testing}
+
+Testing the internal structures of an application
+
 \section{Functional Testing}
+
+A type of testing that focuses on \textit{what} the system does. Utilising \textit{black-box testing}., test cases are derived on the specification of the component under scrutiny.
+
+Functional testing does not look at methods of a module, rather it tests a \textit{slice of the whole program's functionality.}
 
 \section{Combinatorial Testing}
 
@@ -27,7 +56,5 @@
 \section{Regression Testing}
 
 \section{Integration and Component-Based Testing}
-
-
 
 \end{document}
