@@ -122,6 +122,9 @@ An \textit{exception} is also synchronised, however it is an \textit{unexpected}
 
 An \textit{interrupt} is \textit{a}synchronous on the other hand, and is caused by some external device.
 
+
+
+
 \filbreak
 \section{Memory Management}
 Programs must be brought from disk into mmemory and then placed into a process.
@@ -163,6 +166,61 @@ Some old techniques include:
 \end{itemize}
 
 Dynamic Storage-Allocation is possible using First-fit, Best-fir and Worst-fit in terms of hole filling.
+
+\section{Virtual Memory}
+Paged virtual memory allows larger logical address space than physical memory.
+Not all pages of the address space need to be in memory. All needed pages are transfered to free page frames.
+If there are no free frames, then we evict one.
+
+\subsection{Page Fault}
+If there is a reference to a page that isn't stored in memory, then there will be a trap to the OS, a page fault.
+
+The OS ten finds a free frame, swaps page into frame via a sheduled disk operation then resets the tables for validity.
+
+Pages are only brought into memory when referenced, this is called demand paging.
+
+\subsection{Page Replacement}
+There are a couple ways to pick which page to replace.
+\begin{itemize}
+    \item Pick a page that won't be needed any time soon
+    \item Pick a page that hasn't been used in a while
+\end{itemize}
+
+The goal of all of this to reduce the fault rate by selecting the best victim page to remove.
+Best being one that will never be touched again.
+
+Belady's proof:
+"evicting the page that won’t be used for the longest period of time minimizes page fault rate"
+
+\emph{Thrashing} is when the system spends most of its time serving page faults, and little time doing useful things.
+
+This could mean that there is not enough memory oor that the memory is over-commited
+
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale=0.35]{pageFaultGraph.png}
+  \caption{Page Faults vs \#Frames}
+\end{figure}
+
+\subsubsection{Replacement Algorithms}
+\begin{itemize}
+    \item First-In-First-Out
+    \item Belady's Optimal Algorithm - Replace frame that will not be used for the longest time.
+        (Not possible as we can't see into the future)
+    \item Least Recently Used(LRU)
+    \item Replace a page that is 'old enough' - logically, place all pages in a cirlce and rotate round
+
+\end{itemize}
+
+\vspace{0.5cm}
+
+FIFO and LRU can each be implimented locally or globaly.
+
+Local :- Each process has a limited number of frames and operates within them.
+
+Global :- the vicit is chosen from all page frames in the system, regardless of owner:
+
 
 
 \filbreak
@@ -390,85 +448,94 @@ reader:
 \end{verbatim}
 
 
-\section{Virtual Memory}
-Paged virtual memory allows larger logical address space than physical memory.
-Not all pages of the address space need to be in memory. All needed pages are transfered to free page frames.
-If there are no free frames, then we evict one.
+\subsection{Condition Variables}
 
-\subsection{Page Fault}
-If there is a reference to a page that isn't stored in memory, then there will be a trap to the OS, a page fault.
+Has similar operations to Semaphores: \texttt{wait()} and \texttt{signal()}.
 
-The OS ten finds a free frame, swaps page into frame via a sheduled disk operation then resets the tables for validity.
+\begin{description}
+  \item[Wait] Wait until another thread has signaled and released the lock
+  \item[Signal] Wake a thread from the wait queue
+\end{description}
 
-Pages are only brought into memory when referenced, this is called demand paging.
+Signals aren't remembered if there are no threads in the wait queue like they are with semaphores.
 
-\subsection{Page Replacement}
-There are a couple ways to pick which page to replace.
-\begin{itemize}
-    \item Pick a page that won't be needed any time soon
-    \item Pick a page that hasn't been used in a while
-\end{itemize}
-
-The goal of all of this to reduce the fault rate by selecting the best victim page to remove.
-Best being one that will never be touched again.
-
-Belady's proof:
-"evicting the page that won’t be used for the longest period of time minimizes page fault rate"
-
-\emph{Thrashing} is when the system spends most of its time serving page faults, and little time doing useful things.
-
-This could mean that there is not enough memory oor that the memory is over-commited
+\subsubsection{Bounded Buffer}
 
 
-\begin{figure}[H]
-  \centering
-  \includegraphics[scale=0.35]{pageFaultGraph.png}
-  \caption{Page Faults vs \#Frames}
-\end{figure}
+\begin{tabular}{l | c | l }
+lock:      mutex    & 1 & Mutual exlusion on shared data (head \& tail\ldots{})\\
+condition: freeslot & n & There is at least one slot free\\
+condition: fullslot & 0 & There is at least one slot taken
+\end{tabular}
 
-\subsubsection{Replacement Algorithms}
-\begin{itemize}
-    \item First-In-First-Out
-    \item Belady's Optimal Algorithm - Replace frame that will not be used for the longest time.
-        (Not possible as we can't see into the future)
-    \item Least Recently Used(LRU)
-    \item Replace a page that is 'old enough' - logically, place all pages in a cirlce and rotate round
+\begin{verbatim}
+producer:
+    lock(mutex)
+    if [no slots available] wait(freeslot);
+        Add item...
+    signal(fullslot)
+    unlock(mutex)
 
-\end{itemize}
+consumer:
+    lock(mutex)
+    if [no slots have data] wait(fullslot);
+        Pop item from shared buffer
+    signal(freeslot)
+    unlock(mutex)
+    Use item...
+\end{verbatim}
 
-\vspace{0.5cm}
+\subsection{Possible Bugs}
 
-FIFO and LRU can each be implimented locally or globaly.
+Most locking mechanisms are prone to bugs; They're shared data structures, and there's never a
+guarantee a logck will ever be released or acquired when it should be.
 
-Local :- Each process has a limited number of frames and operates within them.
-
-Global :- the vicit is chosen from all page frames in the system, regardless of owner:
-
-
-
-
-
-
-
-
-
-
+The lock is also not strictly associated with the data it protects; Have we got the right lock? 
+Should we have more than one lock? Programming language structures
+such as classes with built in locking mechanisms go some way to protect against these errors.
 
 
+\subsection{Monitors}
 
+A higher level programming language structure, requires some notion of objects (so would be tricky 
+in C, much easier in C++). Each method in the class automatically acquires a lock on entry, 
+releasing it on exit. This is transparent to the implementer of the API exposed by the class. 
+Safeties that come from using classes, such as protected/private methods and structures help protect data.
 
+Implementation of a monitor class in C++. \verb|invariant| is asserted over the life of a class, throwing an
+error if the condition is broken. Similarly \verb|precondition| asserts a condition before method
+execution is allowed. 
 
+\begin{verbatim}
+class Account {
+  private lock myLock;
 
+  private int balance := 0
+  invariant balance >= 0
 
+  public method boolean withdraw(int amount)
+     precondition amount >= 0
+  {
+    myLock.acquire();
+    try:
+      if balance < amount then return false
+      else { balance := balance - amount ; return true }
+    finally:
+      myLock.release();
+  }
 
-
-
-
-
-
-
-
-
+  public method deposit(int amount)
+     precondition amount >= 0
+  {
+    myLock.acquire();
+    try:
+      balance := balance + amount
+    finally:
+      myLock.release();
+  }
+}
+\end{verbatim}
+\emph{Hoiked from wikipedia, https://en.m.wikipedia.org/wiki/Monitor\_(synchronization)}
 
 
 
