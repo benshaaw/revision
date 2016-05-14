@@ -123,6 +123,34 @@ An \textit{exception} is also synchronised, however it is an \textit{unexpected}
 An \textit{interrupt} is \textit{a}synchronous on the other hand, and is caused by some external device.
 
 
+\filbreak
+\section{Threading}
+
+Instead of using multiple processes for concurrency, we can use threads, which share the same address
+space and OS resources. This smaller overhead usually results in threads being more performant than
+the same number of separate processes.
+
+With threads, we want the same program code, data, privelages and resources (open files, sockets...) but
+we need multiple execution states (each thread has it's own registers and stack)
+
+From the perspective of the parent process to a set of threads, the \emph{heap} is shared, and each thread has
+it's own \emph{stack pointer} and \emph{PC}.
+
+\subsection{Kernel Threading}
+
+The kernel presents it's own threading library, with the kernel managaing both the process and threads memory.
+Kernel threads are more performant than just processes, but because they are handled through \textbf{system calls}
+there's still a sizeable overhead.
+
+\subsection{User-Level Threading}
+
+User threads are built completely transparently to the underlying OS, which only sees the parent processes. User
+threads can be very performant, though if one thread is blocked due to IO etc., the entire process will also be
+blocked as there is no way for the kernel to schedule other threads as it isn't aware of them.
+
+User threads can be 10 to 100 times faster than kernel threads.
+
+A combination of kernel threading and user-space threading can be used to get the best performance.
 
 
 \filbreak
