@@ -4,6 +4,7 @@
 \usepackage{graphicx}
 \usepackage{framed}
 \usepackage{float}
+\usepackage{listings}
 
 \graphicspath{{.}}
 
@@ -121,5 +122,271 @@ Some old techniques include:
 \end{itemize}
 
 Dynamic Storage-Allocation is possible using First-fit, Best-fir and Worst-fit in terms of hole filling.
+
+
+\filbreak
+\section{MutEx}\label{mutex}
+
+A \emph{critical section} is a sequence of code that may result in
+incorrect or undefined behaviour if executed simultaneously or
+preempted. Similarly, race conditions occur when the order of execution
+is unknown and behaviour can be unpredictable.
+
+Mutual Exclusion (MutEx) and locking prevent these problems.
+
+To be safe and operate correctly, a critical section must satisfy the
+following requirements:
+
+\begin{description}
+\item[Mutual Exlusion]
+At most one thread is in the critical section
+\item[Progress]
+If a thread is outside the critical section, it cannot prevent another
+from entering
+\item[Bounded Waiting \& No Starvation]
+If a thread is waiting to enter the critical section, it is guaranteed
+to eventually do so
+\item[Performance]
+The overhead of entering and exiting the critical section is small
+relative to the runtime of the section.
+\end{description}
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.5\textwidth]{correctConcurrency}
+  \caption{Concurrency Dependencies}
+\end{figure}
+
+
+\subsection{Peterson's Algorithm}\label{petersons-algorithm}
+
+\begin{verbatim}
+flag[i] = True;
+turn = 1-i;
+
+while (flag[1-i] && turn == 1-i); // spin
+
+/* critical section code */
+
+flag[i] = False;
+\end{verbatim}
+
+Avoids both \emph{deadlock} and \emph{livelock} for two threads, using
+\texttt{i} and \texttt{i-1} as signals. It works but can be tricky to
+implement.
+
+\subsection{Spinlocks}\label{spinlocks}
+
+A \textbf{spinlock} is a locking primative, used to build more complex
+locking mechanisms. The name comes from the behaviour; It `spins' on a
+condition until it is satisfied, so will acquire the lock as soon as it
+is available.
+
+\begin{verbatim}
+// do not have lock
+while(some_condition);
+// have lock
+\end{verbatim}
+
+Acquiring and releasing locks \emph{must} be an atomic operation, so no
+contect switching occurs during acquisition which could lead to a crash
+or undefined state. \textbf{Test and Set} is an atomic instruction we
+can use to acheive this.
+
+\begin{verbatim}
+struct spinlock{
+    int held;
+};
+
+struct spinlock lock;
+lock.held = 0;
+
+int test_and_set(int* flag){
+    int old = *flag;
+    flag = 1;
+    return old;
+}
+
+void acquire(struct lock* lock)
+{
+    /* This is the `spinning' */
+    while(test_and_set(&lock->held));
+}
+
+void release(struct lock* lock)
+{
+    lock->held = 0;
+}
+\end{verbatim}
+
+Spinlocks are simple to implement, but can be slow and \emph{block}
+whilst waiting for the lock, wasting CPU time.
+
+\subsection{Semaphores}\label{semaphores}
+
+Similar to a spinlock, having the two operations
+\texttt{wait(semaphore)} and \texttt{signal(semaphore)}, sometimes given
+as \texttt{P(semaphore)} and \texttt{V(semaphore)}. Semaphores can use
+integer signals, or a boolean - the boolean semaphore has the same
+behaviour as a lock.
+
+\begin{verbatim}
+void wait(semaphore s)
+{
+    while(s <= 0); // Busy wait
+    s--;
+}
+
+void signal(semaphore s)
+{
+    s++;
+}
+\end{verbatim}
+
+This simple implementation uses \emph{busy waiting}. We can use a wait
+queue instead, placing ourselves onto the queue and yielding until the
+semaphore is available.
+
+\begin{verbatim}
+void wait(semaphore* s)
+{
+    s->value--;
+    if(s->value < 0){
+        enqueue_process();
+        /* Add self to the wait queue and block/sleep */
+    }
+}
+
+void signal(semaphore* s)
+{
+    s->value++;
+    if(s->value <= 0){
+        dequeue_process();
+        /* Remove a process from the wait queue and wake it */
+    }
+}
+\end{verbatim}
+
+\subsubsection{Bounded Buffer Problem}\label{bounded-buffer-problem}
+
+In a \textbf{producer and consumer} model, we can have many threads
+wishing to consume some data, and many that produce it. The handover of
+data can be done with a \emph{bounded buffer}
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.8\textwidth]{produceConsume}
+  \caption{Producer-Consumer model}
+\end{figure}
+
+
+We can use three semaphores to ensure safety around this bounded buffer:
+
+\begin{tabular}{l | c | l }
+mutex & 1 & Mutual exlusion on shared data (head \& tail\ldots{})\\
+empty & n & Number of empty / available slots in the buffer. Initially all available.\\
+full  & 0 & Number of taken slots in the buffer. Initially none are taken.
+\end{tabular}
+
+\begin{verbatim}
+producer:
+    wait(empty)
+    wait(mutex)
+        add item to buffer
+    signal(mutex)
+    signal(full)
+
+consumer:
+    wait(full)
+    wait(mutex)
+        remove item from buffer
+    signal(mutex)
+    signal(empty)
+\end{verbatim}
+
+\subsubsection{Pub Sub}\label{pub-sub}
+
+The constraints on \textbf{publishers} (aka writers) and
+\textbf{subscribers} (aka readers) are different:
+
+\begin{enumerate}
+\item
+  We \emph{can} allow multiple subscribers to concurrently access
+\item
+  We \emph{cannot} allow publishers and subscribers to concurrently
+  access
+\item
+  We \emph{cannot} have more than one publisher concurrently writing
+\end{enumerate}
+
+This is because subscribers make the promise to not mutate the data,
+while publishers do not.
+
+\begin{tabular}{l | c | l }
+semaphore: mutex     & 1 & Mutual exlusion on shared data\\
+semaphore: writing   & 1 & Lock on mutation/writing to the data\\
+integer: read\_count & 0 & The number of subscribers currently reading
+\end{tabular}
+
+\begin{verbatim}
+writer:
+    wait(writing)
+        perform writes // Satisfies requirement 3
+    signal(writing)
+    
+reader:
+    wait(mutex)
+        reader_count++;
+        if (reader_count == 1) wait(writing); // Satisfy requirement 2
+    signal(mutex)
+    
+    do reading
+    
+    wait(mutex)
+        reader_count--;
+        if (reader_count == 0) signal(writing); // Release lock on writers if no further readers
+    signal(mutex)
+\end{verbatim}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 \end{document}
