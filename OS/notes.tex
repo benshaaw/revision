@@ -688,15 +688,59 @@ On the other hand, Linux makes no distinction and instead maintains a sole \text
 
 A file is a \textit{collection} of data; its \textit{contents}, \textit{size}, \textit{owner}, and so on.
 
-\begin{framed}
-  There are a few types of \textit{access methods} that an FS can utilise:
+\subsection{Access Methods}
 
-  \begin{itemize}
-  \item \textbf{Sequential Access} - read byte by byte
-  \item \textbf{Direct Access} - random access given to block/byte
-  \item \textbf{Record Access} - file is array of records
-  \item \textbf{Indexed Access} - one file contains an index of a record in another file
-  \end{itemize}
-\end{framed}
+There are a few types of \textit{access methods} that an FS can utilise:
+
+\begin{itemize}
+\item
+  \textbf{Sequential Access} - read byte by byte
+\item
+  \textbf{Direct Access} - random access given to block/byte
+\item
+  \textbf{Record Access} - file is array of records
+\item
+  \textbf{Indexed Access} - one file contains an index of a record in another file
+\end{itemize}
+
+\subsection{Directories}
+
+\textit{Directories}, which can also be referred to as folders, are \textit{nodes} of the file system tree.
+
+A directory contains a unordered list of all files and their attributes within itself. Sorting is usually done by some other utility, such as \texttt{ls}.
+
+One way to find files within these directories, is via \textit{path name translation}.
+
+A file system finds a file when given some \textit{path}, such as \texttt{/home/proper/legit/filepath/ooooo.sh} by walking through the path, directory by directory. At the root, it would first look for \texttt{home}, get its location, then look for \texttt{proper}, get its location, and so on.
+
+\subsection{File Protection}
+
+The file system is responsible for checking of permissions that users have for some given file.
+
+Depending on what the user wants to do to the file, the file system needs to check \textit{which} kind of way it wants to access it, e.g. \textit{read}, \textit{write} or \textit{execute} it. Then, it must check has the rights to perform said action.
+
+This is represented via the \textit{access control matrix}, that lists what users have what access to what files.
+
+\begin{figure}[H]
+  \centering
+  \begin{tabular}{|c|c|c|}
+    \hline
+    & \texttt{/home/hiroshi} & \texttt{/home/boris}\\
+    \hline
+    Hiroshi & rw & -\\
+    \hline
+    Boris & r & rw\\
+    \hline
+    Root & rw & rw\\
+    \hline
+  \end{tabular}
+  \caption{An Access Control Matrix}
+\end{figure}
+
+\textit{Access control matrices} are stored as \textit{lists}, which are easier to manage, but grow in size depending on the number of users, or collection of users (\textit{groups}).
+
+\subsection{Organising Blocks}
+
+A file on a disk is stored as a series of \textit{linked blocks}. 
 
 \end{document}
