@@ -1,6 +1,6 @@
 \documentclass[a4]{article}
 \usepackage{parskip}
-\usepackage[margin=1.5cm]{geometry}
+\usepackage[margin=8em]{geometry}
 \usepackage{graphicx}
 \usepackage{framed}
 \usepackage{float}
@@ -32,7 +32,7 @@ Different architectures dictates the way that an operating system must conduct i
 
 As different architecture platforms have different instruction sets, it determines what are viable methods for accomplishing tasks such as \textit{memory protection} and \textit{control interrupts}.
 
-The OS acts as an intermediary between software and hardware. It allows to mediate access and gives developers a nicer way of completing lower-level actions. This abstraction is achieved via \textit{traps} and \textit{exceptions}. Similarly, devices can gain attention via the use of \textit{interrupts}.
+The OS acts as an intermediary between software and hardware. It allows mediation of access and gives developers a consistent API to access hardware and low-level operations. This abstraction is achieved via \textit{traps} and \textit{exceptions}. Similarly, devices can gain attention via the use of \textit{interrupts}.
 
 An OS is intended to be a good balance between \textit{user needs} and \textit{system needs}.
 
@@ -86,15 +86,17 @@ This allows for more portability, as the layer deals with translation between th
 
 \subsubsection{Microkernel}
 
-This concept aims to minimise what the \textit{kernel} is responsible for, and have the rest dealt with by processes at the user level.
+This concept aims to minimise what the \textit{kernel} is responsible for, and have the rest dealt with by processes at the user level. The Windows Kernel (NT) is a good example.
 
 This isolation allowed isolation between the components, but provides poor performance as the number of user/kernel crossings greatly increases.
 
 \subsubsection{Loadable Kernel Modules}
 
-Utilised by Linux, this concept has core services within the kernel code itself, and then other modules can be loaded in \textit{dynamically}.
+Utilised by the *NIXes (Linux, BSD, other UNIXes, Solaris), this concept has core services within the kernel code itself, and then other modules can be loaded in \textit{dynamically}.
 
 This style avoids some of the issues that come with layering, as it can call any other module. As the loading is dynamic, there is no need for reboots.
+
+
 
 \filbreak
 \subsection{Privileged Instructions}
@@ -142,12 +144,16 @@ An \textit{exception} is also synchronised, however it is an \textit{unexpected}
 
 An \textit{interrupt} is \textit{a}synchronous on the other hand, and is caused by some external device.
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> ceae001a7f46fa7d0bb64045fdf1cfc94997b3c3
 \filbreak
 \subsection{Processes}
 
 A \textit{process} is a program that is being executed.
 
-A process must have a few key aspects for them to work:
+A process must have a few key aspects for it to work:
 
 \begin{framed}
   \textbf{Address Space}
@@ -211,15 +217,15 @@ The most simple style of process.
 A \textit{sequential process} is given some \textit{address space} and a \textit{thread of execution}. The process will then be executed.
 
 \section{Memory Management}
-Programs must be brought from disk into mmemory and then placed into a process.
+Programs must be brought from disk into memory and then placed into a process.
 
 The CPU can only access data from memory, not disk.
 
-Register access takes at most 1 CPU clock, but Main Memory can take mayn cycles, causing a \emph{Stall}.
+Register access takes at most 1 CPU cycle, but Main Memory can take many cycles, causing a \emph{Stall}.
 
 \subsection{Base and Limit Registers}
-A set of \emph{base} and \emph{limit registers} define the logical adress space. the CPU must chech every
-memory access is valid between the base and the limit for that user. Failure causes a trap to the OS monitor
+A set of \emph{base} and \emph{limit registers} define the logical adress space. The CPU must check every
+memory access is valid between the base and the limit for that user. Failure causes a trap in the OS, and usually results in a program being killed (e.g. a \emph{Segmentation Fault})
 
 \subsection{Virtual Address Space}
 Logical/Virtual addresses are independent of physical memory.
@@ -231,7 +237,7 @@ Logical/Virtual addresses a process can reference is called the address space.
 \subsection{Memory Managment Unit (MMU)}
 Effectively is a hash function from logical address to physical address.
 
-a MMU prevents the need for swapped out process to be swapped back into the same physical addresses.
+A MMU prevents the need for swapped out processes to be swapped back into the same physical addresses.
 
 Swapping is not typically supported on mobile devices, more likely to to overwite least used data.
 
@@ -241,7 +247,7 @@ Main memory is usually broken up into two partitions; The OS and user process.
 
 Each process is contained within a single contiguous section on memory.
 
-Reallocation registers are used to protect users processes from one another and from canging the OS code.
+Reallocation registers are used to protect users processes from one another and from changing the OS code.
 
 Some old techniques include:
 \begin{itemize}
@@ -249,7 +255,7 @@ Some old techniques include:
     \item Variable Partitions - no internal fragmentation, but can leave holes in the physical memory
 \end{itemize}
 
-Dynamic Storage-Allocation is possible using First-fit, Best-fir and Worst-fit in terms of hole filling.
+Dynamic Storage-Allocation is possible using First-fit, Best-fit and Worst-fit in terms of hole filling.
 
 \section{Virtual Memory}
 Paged virtual memory allows larger logical address space than physical memory.
@@ -259,7 +265,7 @@ If there are no free frames, then we evict one.
 \subsection{Page Fault}
 If there is a reference to a page that isn't stored in memory, then there will be a trap to the OS, a page fault.
 
-The OS ten finds a free frame, swaps page into frame via a sheduled disk operation then resets the tables for validity.
+The OS then finds a free frame, swaps page into frame via a sheduled disk operation then resets the tables for validity.
 
 Pages are only brought into memory when referenced, this is called demand paging.
 
@@ -278,7 +284,12 @@ Belady's proof:
 
 \emph{Thrashing} is when the system spends most of its time serving page faults, and little time doing useful things.
 
+<<<<<<< HEAD
 This could mean that there is not enough memory or that the memory is over-committed.
+=======
+This could mean that there is not enough memory or that the memory is over-commited
+
+>>>>>>> ceae001a7f46fa7d0bb64045fdf1cfc94997b3c3
 
 \begin{figure}[H]
   \centering
@@ -304,6 +315,35 @@ Local :- Each process has a limited number of frames and operates within them.
 
 Global :- the vicit is chosen from all page frames in the system, regardless of owner:
 
+
+\filbreak
+\section{Threading}
+
+Instead of using multiple processes for concurrency, we can use threads, which share the same address
+space and OS resources. This smaller overhead usually results in threads being more performant than
+the same number of separate processes.
+
+With threads, we want the same program code, data, privelages and resources (open files, sockets...) but
+we need multiple execution states (each thread has it's own registers and stack)
+
+From the perspective of the parent process to a set of threads, the \emph{heap} is shared, and each thread has
+it's own \emph{stack pointer} and \emph{PC}.
+
+\subsection{Kernel Threading}
+
+The kernel presents it's own threading library, with the kernel managaing both the process and threads memory.
+Kernel threads are more performant than just processes, but because they are handled through \textbf{system calls}
+there's still a sizeable overhead.
+
+\subsection{User-Level Threading}
+
+User threads are built completely transparently to the underlying OS, which only sees the parent processes. User
+threads can be very performant, though if one thread is blocked due to IO etc., the entire process will also be
+blocked as there is no way for the kernel to schedule other threads as it isn't aware of them.
+
+User threads can be 10 to 100 times faster than kernel threads.
+
+A combination of kernel threading and user-space threading can be used to get the best performance.
 
 
 \filbreak
@@ -618,5 +658,39 @@ class Account {
 }
 \end{verbatim}
 \emph{Hoiked from wikipedia, https://en.m.wikipedia.org/wiki/Monitor\_(synchronization)}
+
+
+\section{Secondary Storage}
+%\begin{figure}[H]
+%  \centering
+%  \includegraphics[scale=0.35]{memoryHierarchy.png}
+%  \caption{Memory Hierarchy}
+%\end{figure}
+
+\subsection{Disk Performance}
+\begin{itemize} 
+    \item Seek : moving the disk arm to the correct cylinder
+    \item Rotation(latency): waiting for the sector to roatate under the head
+    \item Transfer: transfering data from surface to disk contoller
+\end{itemize}
+\vspace{0.5cm}
+Seeks are very expensive, so the OS tries to shedule disk requests that are queued waiting for the disk
+\begin{itemize}
+    \item FCFS - okay when load is low
+    \item Shortest Seek Time First (SSTF) - minimizes arm movement, unfairly picks middle blocks
+    \item SCAN(elevator algorithm) - service one direction till done, then reverse. Skews wait time non-uniformly
+    \item C-SCAN - like SCAN, but only goes in one direction (typewriter)
+    \item C-LOOK - similar to C-SCAN, arm only goes as far as final request in each direction
+\end{itemize}
+
+\section{File Systems}
+There are a few types of access methods
+\begin{itemize}
+    \item Sequential Access - read byte by byte
+    \item Direct Access - random access given to block/byte
+    \item Record Access - file is array of records
+    \item Indexed Access - one file contains an index of a record in another file
+\end{itemize}
+%NOT FINISHED THIS PLEASE FEEL FREE TO FINISH LECTURE 13
 
 \end{document}
