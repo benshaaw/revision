@@ -57,24 +57,44 @@ As opposed to monolithic, this method implemented the OS as a \textit{set of lay
 \begin{figure}[H]
   \centering
   \begin{center}
-  \begin{tabular}{|c|c|l|}
-    \hline
-    5 & \textbf{Job Managers} & Execute a user's programs\\
-    \hline
-    4 & \textbf{Device Managers} & Handle devices, provide buffering\\
-    \hline
-    3 & \textbf{Console Manager} & Provide virtual consoles\\
-    \hline
-    2 & \textbf{Page Manager} & Implement virtual memories for each process\\
-    \hline
-    1 & \textbf{Kernel} & Implement a virtual processor for each process\\
-    \hline
-    0 & \textbf{Hardware} & \\
-    \hline
-  \end{tabular}
-\end{center}
-\caption{Dijkstra's THE System}
+    \begin{tabular}{|c|c|l|}
+      \hline
+      5 & \textbf{Job Managers} & Execute a user's programs\\
+      \hline
+      4 & \textbf{Device Managers} & Handle devices, provide buffering\\
+      \hline
+      3 & \textbf{Console Manager} & Provide virtual consoles\\
+      \hline
+      2 & \textbf{Page Manager} & Implement virtual memories for each process\\
+      \hline
+      1 & \textbf{Kernel} & Implement a virtual processor for each process\\
+      \hline
+      0 & \textbf{Hardware} & \\
+      \hline
+    \end{tabular}
+  \end{center}
+  \caption{Dijkstra's THE System}
 \end{figure}
+
+Layering provides a \textit{hierarchical} structure but provides performance issues as overhead increases at each layer. Systems can be modelled as layers, but tend not to be implemented in such a way in reality.
+
+\subsubsection{Hardware Abstraction Layer}
+
+More common in modern OSs. The idea is to have a \textit{core OS}, components such as the file system and scheduler, which don't depend on hardware. Then, you have the \textit{hardware abstraction layer} which specifically deals with the hardware through \textit{drivers} and \textit{assembly routines}.
+
+This allows for more portability, as the layer deals with translation between the core and the specifics of the hardware; developers don't have to worry about specific traits of some hardware and can instead deal with specifics of the core.
+
+\subsubsection{Microkernel}
+
+This concept aims to minimise what the \textit{kernel} is responsible for, and have the rest dealt with by processes at the user level.
+
+This isolation allowed isolation between the components, but provides poor performance as the number of user/kernel crossings greatly increases.
+
+\subsubsection{Loadable Kernel Modules}
+
+Utilised by Linux, this concept has core services within the kernel code itself, and then other modules can be loaded in \textit{dynamically}.
+
+This style avoids some of the issues that come with layering, as it can call any other module. As the loading is dynamic, there is no need for reboots.
 
 \filbreak
 \subsection{Privileged Instructions}
@@ -123,6 +143,48 @@ An \textit{exception} is also synchronised, however it is an \textit{unexpected}
 An \textit{interrupt} is \textit{a}synchronous on the other hand, and is caused by some external device.
 
 \filbreak
+\subsection{Processes}
+
+A \textit{process} is a program that is being executed.
+
+A process must have a few key aspects for them to work:
+
+\textbf{Address Space}
+
+Contains the \textit{instructions} of the running program, and the \textit{data} for running the program.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale=0.64]{addressspace}
+  \caption{An idealised address space given for a process}
+\end{figure}
+
+\textbf{CPU State}
+
+Contains the \textit{program counter} which indicates the next instruction, the \textit{stack pointer} and other register values.
+
+\textbf{OS Resources}
+
+Contains items that the OS gives the process access to, such as files, network connections and so on.
+
+\subsection{PCB: Process Control Block}
+
+The operating system needs a way to keep a track of all processes that are running.
+
+A data structure, called the \textit{process control block}, or \textit{process descriptor}, aims to do this.
+
+This name space includes all the \textit{process IDs} of the processes that are currently present. A process ID is a \textit{unique integer}.
+
+A process is called by the \texttt{fork()} function, and can be \textit{killed} (\texttt{kill()}), \textit{paused} (\texttt{wait()}), and \textit{limited} (\texttt{nice()}).
+
+The PCB keeps: the process' \textit{execution state} when the process isn't active; the parent's PID; program counter; and so on. Linux's PCB has over 95 fields for \textit{each} entry.
+
+\subsection{Sequential Process}
+
+The most simple style of process.
+
+A \textit{sequential process} is given some \textit{address space} and a \textit{thread of execution}. The process will then be executed.
+
 \section{Memory Management}
 Programs must be brought from disk into mmemory and then placed into a process.
 
@@ -154,7 +216,7 @@ Main memory is usually broken up into two partitions; The OS and user process.
 
 Each process is contained within a single contiguous section on memory.
 
-Realocation registers are used to protect users processes from one another and from canging the OS code.
+Reallocation registers are used to protect users processes from one another and from canging the OS code.
 
 Some old techniques include:
 \begin{itemize}
@@ -388,46 +450,5 @@ reader:
         if (reader_count == 0) signal(writing); // Release lock on writers if no further readers
     signal(mutex)
 \end{verbatim}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 \end{document}
