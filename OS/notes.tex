@@ -18,6 +18,49 @@ ItalicFont=NotoSans-Italic.ttf, BoldItalicFont=NotoSans-BoldItalic.ttf
 
 \begin{document}
 
-\textbf{\HUGE Computer Security Notes}
+\textbf{\Huge Computer Security Notes}
+
+
+
+\section{Memory Managment}
+Programs must be brought from disk into mmemory and then placed into a process.
+
+The CPU can only access data from memory, not disk.
+
+Register access takes at most 1 CPU clock, but Main Memory can take mayn cycles, causing a \emph{Stall}.
+
+\subsection{Base and Limit Registers}
+A set of \emph{base} and \emph{limit registers} define the logical adress space. the CPU must chech every
+memory access is valid between the base and the limit for that user. Failure causes a trap to the OS monitor
+
+\subsection{Virtual Address Space}
+Logical/Virtual addresses are independent of physical memory.
+
+Hardware translates virtual addresses into physical ones.
+
+Logical/Virtual addresses a process can reference is called the address space.
+
+\subsection{Memory Managment Unit (MMU)}
+Effectively is a hash function from logical address to physical address.
+
+a MMU prevents the need for swapped out process to be swapped back into the same physical addresses.
+
+Swapping is not typically supported on mobile devices, more likely to to overwite least used data.
+
+
+\subsection{Partitioning}
+Main memory is usually broken up into two partitions; The OS and user process.
+
+Each process is contained within a single contiguous section on memory.
+
+Realocation registers are used to protect users processes from one another and from canging the OS code.
+
+Some old techniques include:
+\begin{itemize}
+    \item Fixed Partitions - simple but causes fragmentation often
+    \item Variable Partitions - no internal fragmentation, but can leave holes in the physical memory
+\end{itemization}
+
+Dynamic Storage-Allocation is possible using First-fit, Best-fir and Worst-fit in terms of hole filling.
 
 \end{document}

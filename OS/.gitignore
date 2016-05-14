@@ -1,0 +1,5 @@
+*.swp
+*.aux
+*.log
+*.tex#
+*.tex~
