@@ -8,7 +8,7 @@
 
 \graphicspath{{.}}
 
-% Thanks to Angus Pearson for nagging me to fuck about with fonts in
+% Thanks to Angus Pearson for nagging me to fuck about fonts in
 % XeLaTeX
 
 \usepackage{fontspec} \usepackage{xltxtra}
@@ -144,10 +144,6 @@ An \textit{exception} is also synchronised, however it is an \textit{unexpected}
 
 An \textit{interrupt} is \textit{a}synchronous on the other hand, and is caused by some external device.
 
-<<<<<<< HEAD
-=======
-
->>>>>>> ceae001a7f46fa7d0bb64045fdf1cfc94997b3c3
 \filbreak
 \subsection{Processes}
 
@@ -176,6 +172,8 @@ A process must have a few key aspects for it to work:
 \end{framed}
 
 A process can spawn another process, which are respectively called the \textit{parent} and \textit{child} of each other. When the parent spawns its child, it can choose to either \textit{wait for the child to terminate}, or \textit{run in parallel with the child}.
+
+Spawning of a child makes use of the \texttt{fork()} process. It returns \texttt{0} to the child, and its process ID to the parent.
 
 \subsection{PCB: Process Control Block}
 
@@ -284,12 +282,7 @@ Belady's proof:
 
 \emph{Thrashing} is when the system spends most of its time serving page faults, and little time doing useful things.
 
-<<<<<<< HEAD
 This could mean that there is not enough memory or that the memory is over-committed.
-=======
-This could mean that there is not enough memory or that the memory is over-commited
-
->>>>>>> ceae001a7f46fa7d0bb64045fdf1cfc94997b3c3
 
 \begin{figure}[H]
   \centering
