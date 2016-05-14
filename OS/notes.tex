@@ -1,4 +1,4 @@
-\documentclass{article}
+\documentclass[a4]{article}
 \usepackage{parskip}
 \usepackage[margin=1.5cm]{geometry}
 \usepackage{graphicx}
@@ -136,14 +136,11 @@ An OS will define a set of system calls that makes it possible for such an inter
 
 \subsection{Exception Handling}
 
-A \textit{trap} is a synchronised, intended transition that is initiated by the OS.
+A \textit{trap} is a synchronised, intended transition that is initiated by the OS. The OS takes control as the result of a system call.
 
 An \textit{exception} is also synchronised, however it is an \textit{unexpected} problem with some instruction.
 
 An \textit{interrupt} is \textit{a}synchronous on the other hand, and is caused by some external device.
-
-
-
 
 \filbreak
 \subsection{Processes}
@@ -152,23 +149,27 @@ A \textit{process} is a program that is being executed.
 
 A process must have a few key aspects for them to work:
 
-\textbf{Address Space}
+\begin{framed}
+  \textbf{Address Space}
 
-Contains the \textit{instructions} of the running program, and the \textit{data} for running the program.
+  Contains the \textit{instructions} of the running program, and the \textit{data} for running the program.
 
-\begin{figure}[H]
-  \centering
-  \includegraphics[scale=0.64]{addressspace}
-  \caption{An idealised address space given for a process}
-\end{figure}
+  \begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.64]{addressspace}
+    \caption{An idealised address space given for a process}
+  \end{figure}
 
-\textbf{CPU State}
+  \textbf{CPU State}
 
-Contains the \textit{program counter} which indicates the next instruction, the \textit{stack pointer} and other register values.
+  Contains the \textit{program counter} which indicates the next instruction, the \textit{stack pointer} and other register values.
 
-\textbf{OS Resources}
+  \textbf{OS Resources}
 
-Contains items that the OS gives the process access to, such as files, network connections and so on.
+  Contains items that the OS gives the process access to, such as files, network connections and so on.
+\end{framed}
+
+A process can spawn another process, which are respectively called the \textit{parent} and \textit{child} of each other. When the parent spawns its child, it can choose to either \textit{wait for the child to terminate}, or \textit{run in parallel with the child}.
 
 \subsection{PCB: Process Control Block}
 
@@ -181,6 +182,27 @@ This name space includes all the \textit{process IDs} of the processes that are 
 A process is called by the \texttt{fork()} function, and can be \textit{killed} (\texttt{kill()}), \textit{paused} (\texttt{wait()}), and \textit{limited} (\texttt{nice()}).
 
 The PCB keeps: the process' \textit{execution state} when the process isn't active; the parent's PID; program counter; and so on. Linux's PCB has over 95 fields for \textit{each} entry.
+
+\begin{figure}[H]
+  \begin{center}
+    \begin{tabular}{|c|c|}
+      \hline
+      \textbf{Ready} & Waiting to be assigned by the CPU\\
+      \hline
+      \textbf{Running} & The process that is currently running in the CPU\\
+      \hline
+      \textbf{Waiting} & Cannot progress until some event happens, e.g. \textit{I/O completion}\\
+      \hline
+    \end{tabular}
+    \caption{Possible execution state of a process}
+  \end{center}
+\end{figure}
+
+When a process is returned to the \textit{running} state, the values of registers are transferred from the PCB to hardware registers. This is called a \textit{context switch}. These occur many, many times per second. The decision of which process to run next is \textit{scheduling}.
+
+\subsection{State Queues}
+
+A set of queues contains a queue for a process within each respective state. These are implemented as a set of \textit{linked lists}. 
 
 \subsection{Sequential Process}
 
@@ -256,8 +278,7 @@ Belady's proof:
 
 \emph{Thrashing} is when the system spends most of its time serving page faults, and little time doing useful things.
 
-This could mean that there is not enough memory oor that the memory is over-commited
-
+This could mean that there is not enough memory or that the memory is over-committed.
 
 \begin{figure}[H]
   \centering
