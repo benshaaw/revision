@@ -390,17 +390,59 @@ reader:
 \end{verbatim}
 
 
+\section{Virtual Memory}
+Paged virtual memory allows larger logical address space than physical memory.
+Not all pages of the address space need to be in memory. All needed pages are transfered to free page frames.
+If there are no free frames, then we evict one.
+
+\subsection{Page Fault}
+If there is a reference to a page that isn't stored in memory, then there will be a trap to the OS, a page fault.
+
+The OS ten finds a free frame, swaps page into frame via a sheduled disk operation then resets the tables for validity.
+
+Pages are only brought into memory when referenced, this is called demand paging.
+
+\subsection{Page Replacement}
+There are a couple ways to pick which page to replace.
+\begin{itemize}
+    \item Pick a page that won't be needed any time soon
+    \item Pick a page that hasn't been used in a while
+\end{itemize}
+
+The goal of all of this to reduce the fault rate by selecting the best victim page to remove.
+Best being one that will never be touched again.
+
+Belady's proof:
+"evicting the page that won’t be used for the longest period of time minimizes page fault rate"
+
+\emph{Thrashing} is when the system spends most of its time serving page faults, and little time doing useful things.
+
+This could mean that there is not enough memory oor that the memory is over-commited
 
 
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale=0.35]{pageFaultGraph.png}
+  \caption{Page Faults vs \#Frames}
+\end{figure}
 
+\subsubsection{Replacement Algorithms}
+\begin{itemize}
+    \item First-In-First-Out
+    \item Belady's Optimal Algorithm - Replace frame that will not be used for the longest time.
+        (Not possible as we can't see into the future)
+    \item Least Recently Used(LRU)
+    \item Replace a page that is 'old enough' - logically, place all pages in a cirlce and rotate round
 
+\end{itemize}
 
+\vspace{0.5cm}
 
+FIFO and LRU can each be implimented locally or globaly.
 
+Local :- Each process has a limited number of frames and operates within them.
 
-
-
-
+Global :- the vicit is chosen from all page frames in the system, regardless of owner:
 
 
 
