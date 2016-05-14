@@ -1,6 +1,8 @@
 \documentclass{article}
 \usepackage{parskip}
 \usepackage[margin=2cm]{geometry}
+\usepackage{graphicx}
+\graphicspath{{.}}
 
 % Thanks to Angus Pearson for nagging me to fuck about with fonts in
 % XeLaTeX
@@ -20,8 +22,24 @@ ItalicFont=NotoSans-Italic.ttf, BoldItalicFont=NotoSans-BoldItalic.ttf
 
 \textbf{\Huge Operating Systems Notes}
 
-\subsection{Operating System Structure}
+\section{OSs and Architectures}
 
+Different architectures dictates the way that an operating system must conduct its business.
 
+As different architecture platforms have different instruction sets, it determines what are viable methods for accomplishing tasks such as \textit{memory protection} and \textit{control interrupts}.
+
+\subsection{Privileged Instructions}
+
+These instructions are restricted to use by the OS \textit{only}, and includes direct access to \textit{I/O devices} and \textit{memory state management}.
+
+This is achieved by the implementation of two \textit{modes of operation}; \textit{user} and \textit{kernel} modes.
+\begin{figure}[h!]
+  \centering
+  \includegraphics[scale=0.35]{privilegeGraphX86}
+  \caption{x86 Architecture Levels of Privilege}
+  \textit{Courtesy of Hertzsprung of English Wikipedia}
+\end{figure}
+
+More words?
 
 \end{document}
