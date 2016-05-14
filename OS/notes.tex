@@ -627,4 +627,38 @@ class Account {
 \end{verbatim}
 \emph{Hoiked from wikipedia, https://en.m.wikipedia.org/wiki/Monitor\_(synchronization)}
 
+
+\section{Secondary Storage}
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale=0.35]{memoryHierarchy.png}
+  \caption{Memory Hierarchy}
+\end{figure}
+
+\subsection{Disk Performance}
+\begin{itemize} 
+    \item Seek : moving the disk arm to the correct cylinder
+    \item Rotation(latency): waiting for the sector to roatate under the head
+    \item Transfer: transfering data from surface to disk contoller
+\end{itemize}
+\vspace{0.5cm}
+Seeks are very expensive, so the OS tries to shedule disk requests that are queued waiting for the disk
+\begin{itemize}
+    \item FCFS - okay when load is low
+    \item Shortest Seek Time First (SSTF) - minimizes arm movement, unfairly picks middle blocks
+    \item SCAN(elevator algorithm) - service one direction till done, then reverse. Skews wait time non-uniformly
+    \item C-SCAN - like SCAN, but only goes in one direction (typewriter)
+    \item C-LOOK - similar to C-SCAN, arm only goes as far as final request in each direction
+\end{itemize}
+
+\section{File Systems}
+There are a few types of access methods
+\begin{itemize}
+    \item Sequential Access - read byte by byte
+    \item Direct Access - random access given to block/byte
+    \item Record Access - file is array of records
+    \item Indexed Access - one file contains an index of a record in another file
+\end{itemize}
+%NOT FINISHED THIS PLEASE FEEL FREE TO FINISH LECTURE 13
+
 \end{document}
