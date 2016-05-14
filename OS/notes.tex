@@ -677,13 +677,26 @@ Seeks are very expensive, so the OS tries to shedule disk requests that are queu
 \end{itemize}
 
 \section{File Systems}
-There are a few types of access methods
-\begin{itemize}
-    \item Sequential Access - read byte by byte
-    \item Direct Access - random access given to block/byte
-    \item Record Access - file is array of records
-    \item Indexed Access - one file contains an index of a record in another file
-\end{itemize}
-%NOT FINISHED THIS PLEASE FEEL FREE TO FINISH LECTURE 13
+
+The OS acts as an intermediary between the OS and an FS. It should hide hardware specifics and allocate disk blocks for the FS.
+
+The file system is responsible for the organisation of files.
+
+For example, Windows' file system NTFS relies on the OS making distinct difference between what disk it is reading from, such as the hard disk or a connected USB thumb drive: \texttt{C:}, \texttt{D:}, etc.
+
+On the other hand, Linux makes no distinction and instead maintains a sole \textit{root}, \texttt{/}, where everything is seen as a 'file', such as a hard disk (\texttt{/dev/sda}), or a media file you may have (\texttt{/home/user/swedgefulBasslines.mp3}).
+
+A file is a \textit{collection} of data; its \textit{contents}, \textit{size}, \textit{owner}, and so on.
+
+\begin{framed}
+  There are a few types of \textit{access methods} that an FS can utilise:
+
+  \begin{itemize}
+  \item \textbf{Sequential Access} - read byte by byte
+  \item \textbf{Direct Access} - random access given to block/byte
+  \item \textbf{Record Access} - file is array of records
+  \item \textbf{Indexed Access} - one file contains an index of a record in another file
+  \end{itemize}
+\end{framed}
 
 \end{document}
