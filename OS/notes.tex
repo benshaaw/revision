@@ -187,7 +187,7 @@ This name space includes all the \textit{process IDs} of the processes that are 
 
 A process is called by the \texttt{fork()} function, and can be \textit{killed} (\texttt{kill()}), \textit{paused} (\texttt{wait()}), and \textit{limited} (\texttt{nice()}).
 
-The PCB keeps: the process' \textit{execution state} when the process isn't active; the parent's PID; program counter; and so on. Linux's PCB has over 95 fields for \textit{each} entry.
+The PCB keeps: the process's \textit{execution state} when the process isn't active; the parent's PID; program counter; and so on. Linux's PCB has over 95 fields for \textit{each} entry.
 
 \begin{figure}[H]
   \begin{center}
@@ -216,12 +216,12 @@ The most simple style of process.
 
 A \textit{sequential process} is given some \textit{address space} and a \textit{thread of execution}. The process will then be executed.
 
-\subsection{Memory Managment Unit (MMU)}
+\subsection{Memory Management Unit (MMU)}
 Effectively is a hash function from logical address to physical address.
 
 A MMU prevents the need for swapped out processes to be swapped back into the same physical addresses.
 
-Swapping is not typically supported on mobile devices, more likely to to overwite least used data.
+Swapping is not typically supported on mobile devices, more likely to to overwrite least used data.
 
 
 \subsection{Partitioning}
@@ -247,7 +247,7 @@ Instead of using multiple processes for concurrency, we can use threads, which s
 space and OS resources. This smaller overhead usually results in threads being more performant than
 the same number of separate processes.
 
-With threads, we want the same program code, data, privelages and resources (open files, sockets...) but
+With threads, we want the same program code, data, privileges and resources (open files, sockets...) but
 we need multiple execution states (each thread has it's own registers and stack)
 
 From the perspective of the parent process to a set of threads, the \emph{heap} is shared, and each thread has
@@ -255,7 +255,7 @@ it's own \emph{stack pointer} and \emph{PC}.
 
 \subsection{Kernel Threading}
 
-The kernel presents it's own threading library, with the kernel managaing both the process and threads memory.
+The kernel presents it's own threading library, with the kernel managing both the process and threads memory.
 Kernel threads are more performant than just processes, but because they are handled through \textbf{system calls}
 there's still a sizeable overhead.
 
@@ -275,7 +275,7 @@ A combination of kernel threading and user-space threading can be used to get th
 
 A \emph{critical section} is a sequence of code that may result in
 incorrect or undefined behaviour if executed simultaneously or
-preempted. Similarly, race conditions occur when the order of execution
+pre-empted. Similarly, race conditions occur when the order of execution
 is unknown and behaviour can be unpredictable.
 
 Mutual Exclusion (MutEx) and locking prevent these problems.
@@ -284,7 +284,7 @@ To be safe and operate correctly, a critical section must satisfy the
 following requirements:
 
 \begin{description}
-\item[Mutual Exlusion]
+\item[Mutual Exclusion]
 At most one thread is in the critical section
 \item[Progress]
 If a thread is outside the critical section, it cannot prevent another
@@ -303,6 +303,20 @@ relative to the runtime of the section.
   \caption{Concurrency Dependencies}
 \end{figure}
 
+
+\subsection{Deadlocks}
+
+We obviously want to avoid deadlocking (and livelocking). For a deadlock to occur, the following four conditions must exist:
+
+\begin{itemize}
+\item Mutual Exclusion
+\item Hold and Wait (Prevent a process that needs two or more locks from holding one and waiting for the other indefinitely - see the Philosopher's Spaghetti problem)
+\item No Preemption i.e. we can't stop a process/thread from running that may be causing a lockup
+\item Circular waiting e.g. a process busy waiting on a lock it won't ever get
+\end{itemize}
+
+We can see if a deadlock is possible if there is an \emph{irreducible} cycle in the dependency/resource graph for a set of 
+processes or threads.
 
 \subsection{Peterson's Algorithm}\label{petersons-algorithm}
 
@@ -323,7 +337,7 @@ implement.
 
 \subsection{Spinlocks}\label{spinlocks}
 
-A \textbf{spinlock} is a locking primative, used to build more complex
+A \textbf{spinlock} is a locking primitive, used to build more complex
 locking mechanisms. The name comes from the behaviour; It `spins' on a
 condition until it is satisfied, so will acquire the lock as soon as it
 is available.
@@ -335,9 +349,9 @@ is available.
 \end{verbatim}
 
 Acquiring and releasing locks \emph{must} be an atomic operation, so no
-contect switching occurs during acquisition which could lead to a crash
+context switching occurs during acquisition which could lead to a crash
 or undefined state. \textbf{Test and Set} is an atomic instruction we
-can use to acheive this.
+can use to achieve this.
 
 \begin{verbatim}
     struct spinlock{
@@ -429,7 +443,7 @@ data can be done with a \emph{bounded buffer}
 We can use three semaphores to ensure safety around this bounded buffer:
 
 \begin{tabular}{l | c | l }
-mutex & 1 & Mutual exlusion on shared data (head \& tail\ldots{})\\
+mutex & 1 & Mutual exclusion on shared data (head \& tail\ldots{})\\
 empty & n & Number of empty / available slots in the buffer. Initially all available.\\
 full  & 0 & Number of taken slots in the buffer. Initially none are taken.
 \end{tabular}
@@ -469,7 +483,7 @@ This is because subscribers make the promise to not mutate the data,
 while publishers do not.
 
 \begin{tabular}{l | c | l }
-semaphore: mutex     & 1 & Mutual exlusion on shared data\\
+semaphore: mutex     & 1 & Mutual exclusion on shared data\\
 semaphore: writing   & 1 & Lock on mutation/writing to the data\\
 integer: read\_count & 0 & The number of subscribers currently reading
 \end{tabular}
@@ -499,7 +513,7 @@ reader:
 Has similar operations to Semaphores: \texttt{wait()} and \texttt{signal()}.
 
 \begin{description}
-  \item[Wait] Wait until another thread has signaled and released the lock
+  \item[Wait] Wait until another thread has signalled and released the lock
   \item[Signal] Wake a thread from the wait queue
 \end{description}
 
@@ -509,7 +523,7 @@ Signals aren't remembered if there are no threads in the wait queue like they ar
 
 
 \begin{tabular}{l | c | l }
-lock:      mutex    & 1 & Mutual exlusion on shared data (head \& tail\ldots{})\\
+lock:      mutex    & 1 & Mutual exclusion on shared data (head \& tail\ldots{})\\
 condition: freeslot & n & There is at least one slot free\\
 condition: fullslot & 0 & There is at least one slot taken
 \end{tabular}
@@ -534,7 +548,7 @@ consumer:
 \subsection{Possible Bugs}
 
 Most locking mechanisms are prone to bugs; They're shared data structures, and there's never a
-guarantee a logck will ever be released or acquired when it should be.
+guarantee a lock will ever be released or acquired when it should be.
 
 The lock is also not strictly associated with the data it protects; Have we got the right lock? 
 Should we have more than one lock? Programming language structures
@@ -594,11 +608,11 @@ class Account {
 \subsection{Disk Performance}
 \begin{itemize} 
     \item Seek : moving the disk arm to the correct cylinder
-    \item Rotation(latency): waiting for the sector to roatate under the head
-    \item Transfer: transfering data from surface to disk contoller
+    \item Rotation(latency): waiting for the sector to rotate under the head
+    \item Transfer: transferring data from surface to disk controller
 \end{itemize}
 \vspace{0.5cm}
-Seeks are very expensive, so the OS tries to shedule disk requests that are queued waiting for the disk
+Seeks are very expensive, so the OS tries to schedule disk requests that are queued waiting for the disk
 \begin{itemize}
     \item FCFS - okay when load is low
     \item Shortest Seek Time First (SSTF) - minimizes arm movement, unfairly picks middle blocks
@@ -629,7 +643,7 @@ addressing scheme exposed to programs.
 (starting memory address) of a page. Each process has it's own page table.
 \item[Page Offset] How far into a page the word of memory we're addressing is.
 \item[Page Frame] The divisions of physical memory that can hold a page; A page frame is the same size as a page, but may or may not contain a (valid) page.
-\item[PTBR] Page Table Base Register - holds the physical addres of the start of the page table
+\item[PTBR] Page Table Base Register - holds the physical address of the start of the page table
 \item[PTLR] Page Table Length Register
 \item[TLB] Translation Look-aside Buffer - effectively a fast cache of mappings from Logical to Physical addresses
 \end{description}
@@ -680,7 +694,7 @@ Breaks the logical address space into \textit{multiple page tables}.
 
 The page number portion of the address would then be split further, into another page table and offset value.
 
-This quicky gets silly. A page number in a three level paging system for a 64 bit address space is as follows:
+This quickly gets silly. A page number in a three level paging system for a 64 bit address space is as follows:
 
 \begin{verbatim}
 
@@ -692,7 +706,7 @@ This quicky gets silly. A page number in a three level paging system for a 64 bi
 
 \subsubsection{Hashed Page Table}
 
-Where the page number is hashed into a page table, where each element has the virtual page numbe,r value of the page frame and a pointer to the next element.
+Where the page number is hashed into a page table, where each element has the virtual page number,r value of the page frame and a pointer to the next element.
 
 This reduces the amount of entries as each entry in a hashed page table refers to \textit{multiple pages} rather than one page.
 
@@ -716,7 +730,7 @@ The CPU can only access data from memory, not disk.
 Register access takes at most 1 CPU cycle, but Main Memory can take many cycles, causing a \emph{Stall}.
 
 \subsection{Base and Limit Registers}
-A set of \emph{base} and \emph{limit registers} define the logical adress space. The CPU must check every
+A set of \emph{base} and \emph{limit registers} define the logical address space. The CPU must check every
 memory access is valid between the base and the limit for that user. Failure causes a trap in the OS, and usually results in a program being killed (e.g. a \emph{Segmentation Fault})
 
 \subsection{Virtual Address Space}
@@ -734,7 +748,7 @@ Logical/Virtual addresses a process can reference is called the address space.
 \subsection{Page Fault}
 If there is a reference to a page that isn't stored in memory, then there will be a trap to the OS, a page fault.
 
-The OS then finds a free frame, swaps page into frame via a sheduled disk operation then resets the tables for validity.
+The OS then finds a free frame, swaps page into frame via a scheduled disk operation then resets the tables for validity.
 
 Pages are only brought into memory when referenced, this is called demand paging.
 
@@ -767,17 +781,17 @@ This could mean that there is not enough memory or that the memory is over-commi
     \item Belady's Optimal Algorithm - Replace frame that will not be used for the longest time.
         (Not possible as we can't see into the future)
     \item Least Recently Used(LRU)
-    \item Replace a page that is 'old enough' - logically, place all pages in a cirlce and rotate round
+    \item Replace a page that is 'old enough' - logically, place all pages in a circle and rotate round
 
 \end{itemize}
 
 \vspace{0.5cm}
 
-FIFO and LRU can each be implimented locally or globaly.
+FIFO and LRU can each be implemented locally or globally.
 
 Local :- Each process has a limited number of frames and operates within them.
 
-Global :- the vicit is chosen from all page frames in the system, regardless of owner:
+Global :- the victim is chosen from all page frames in the system, regardless of owner:
 
 
 
