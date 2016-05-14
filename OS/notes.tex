@@ -26,7 +26,9 @@ ItalicFont=NotoSans-Italic.ttf, BoldItalicFont=NotoSans-BoldItalic.ttf
 
 \textbf{\Huge Operating Systems Notes}
 
-\section{OSs and Architectures}
+\tableofcontents
+
+\section{OS Architecture}
 
 Different architectures dictates the way that an operating system must conduct its business.
 
@@ -144,7 +146,7 @@ An \textit{exception} is also synchronised, however it is an \textit{unexpected}
 
 An \textit{interrupt} is \textit{a}synchronous on the other hand, and is caused by some external device.
 
-\filbreak
+
 \subsection{Processes}
 
 A \textit{process} is a program that is being executed.
@@ -214,24 +216,6 @@ The most simple style of process.
 
 A \textit{sequential process} is given some \textit{address space} and a \textit{thread of execution}. The process will then be executed.
 
-\section{Memory Management}
-Programs must be brought from disk into memory and then placed into a process.
-
-The CPU can only access data from memory, not disk.
-
-Register access takes at most 1 CPU cycle, but Main Memory can take many cycles, causing a \emph{Stall}.
-
-\subsection{Base and Limit Registers}
-A set of \emph{base} and \emph{limit registers} define the logical adress space. The CPU must check every
-memory access is valid between the base and the limit for that user. Failure causes a trap in the OS, and usually results in a program being killed (e.g. a \emph{Segmentation Fault})
-
-\subsection{Virtual Address Space}
-Logical/Virtual addresses are independent of physical memory.
-
-Hardware translates virtual addresses into physical ones.
-
-Logical/Virtual addresses a process can reference is called the address space.
-
 \subsection{Memory Managment Unit (MMU)}
 Effectively is a hash function from logical address to physical address.
 
@@ -254,59 +238,6 @@ Some old techniques include:
 \end{itemize}
 
 Dynamic Storage-Allocation is possible using First-fit, Best-fit and Worst-fit in terms of hole filling.
-
-\section{Virtual Memory}
-Paged virtual memory allows larger logical address space than physical memory.
-Not all pages of the address space need to be in memory. All needed pages are transfered to free page frames.
-If there are no free frames, then we evict one.
-
-\subsection{Page Fault}
-If there is a reference to a page that isn't stored in memory, then there will be a trap to the OS, a page fault.
-
-The OS then finds a free frame, swaps page into frame via a sheduled disk operation then resets the tables for validity.
-
-Pages are only brought into memory when referenced, this is called demand paging.
-
-\subsection{Page Replacement}
-There are a couple ways to pick which page to replace.
-\begin{itemize}
-    \item Pick a page that won't be needed any time soon
-    \item Pick a page that hasn't been used in a while
-\end{itemize}
-
-The goal of all of this to reduce the fault rate by selecting the best victim page to remove.
-Best being one that will never be touched again.
-
-Belady's proof:
-"evicting the page that won’t be used for the longest period of time minimizes page fault rate"
-
-\emph{Thrashing} is when the system spends most of its time serving page faults, and little time doing useful things.
-
-This could mean that there is not enough memory or that the memory is over-committed.
-
-\begin{figure}[H]
-  \centering
-  \includegraphics[scale=0.35]{pageFaultGraph.png}
-  \caption{Page Faults vs \#Frames}
-\end{figure}
-
-\subsubsection{Replacement Algorithms}
-\begin{itemize}
-    \item First-In-First-Out
-    \item Belady's Optimal Algorithm - Replace frame that will not be used for the longest time.
-        (Not possible as we can't see into the future)
-    \item Least Recently Used(LRU)
-    \item Replace a page that is 'old enough' - logically, place all pages in a cirlce and rotate round
-
-\end{itemize}
-
-\vspace{0.5cm}
-
-FIFO and LRU can each be implimented locally or globaly.
-
-Local :- Each process has a limited number of frames and operates within them.
-
-Global :- the vicit is chosen from all page frames in the system, regardless of owner:
 
 
 \filbreak
@@ -340,7 +271,7 @@ A combination of kernel threading and user-space threading can be used to get th
 
 
 \filbreak
-\section{MutEx}\label{mutex}
+\section{Mutual Exclusion \& Locking}
 
 A \emph{critical section} is a sequence of code that may result in
 incorrect or undefined behaviour if executed simultaneously or
@@ -376,14 +307,14 @@ relative to the runtime of the section.
 \subsection{Peterson's Algorithm}\label{petersons-algorithm}
 
 \begin{verbatim}
-flag[i] = True;
-turn = 1-i;
+    flag[i] = True;
+    turn = 1-i;
 
-while (flag[1-i] && turn == 1-i); // spin
+    while (flag[1-i] && turn == 1-i); // spin
 
-/* critical section code */
+    /* critical section code */
 
-flag[i] = False;
+    flag[i] = False;
 \end{verbatim}
 
 Avoids both \emph{deadlock} and \emph{livelock} for two threads, using
@@ -398,9 +329,9 @@ condition until it is satisfied, so will acquire the lock as soon as it
 is available.
 
 \begin{verbatim}
-// do not have lock
-while(some_condition);
-// have lock
+    // do not have lock
+    while(some_condition);
+    // have lock
 \end{verbatim}
 
 Acquiring and releasing locks \emph{must} be an atomic operation, so no
@@ -409,29 +340,29 @@ or undefined state. \textbf{Test and Set} is an atomic instruction we
 can use to acheive this.
 
 \begin{verbatim}
-struct spinlock{
-    int held;
-};
+    struct spinlock{
+        int held;
+    };
 
-struct spinlock lock;
-lock.held = 0;
+    struct spinlock lock;
+    lock.held = 0;
 
-int test_and_set(int* flag){
-    int old = *flag;
-    flag = 1;
-    return old;
-}
+    int test_and_set(int* flag){
+        int old = *flag;
+        flag = 1;
+        return old;
+    }
 
-void acquire(struct lock* lock)
-{
-    /* This is the `spinning' */
-    while(test_and_set(&lock->held));
-}
+    void acquire(struct lock* lock)
+    {
+        /* This is the `spinning' */
+        while(test_and_set(&lock->held));
+    }
 
-void release(struct lock* lock)
-{
-    lock->held = 0;
-}
+    void release(struct lock* lock)
+    {
+        lock->held = 0;
+    }
 \end{verbatim}
 
 Spinlocks are simple to implement, but can be slow and \emph{block}
@@ -446,16 +377,16 @@ integer signals, or a boolean - the boolean semaphore has the same
 behaviour as a lock.
 
 \begin{verbatim}
-void wait(semaphore s)
-{
-    while(s <= 0); // Busy wait
-    s--;
-}
+    void wait(semaphore s)
+    {
+        while(s <= 0); // Busy wait
+        s--;
+    }
 
-void signal(semaphore s)
-{
-    s++;
-}
+    void signal(semaphore s)
+    {
+        s++;
+    }
 \end{verbatim}
 
 This simple implementation uses \emph{busy waiting}. We can use a wait
@@ -463,23 +394,23 @@ queue instead, placing ourselves onto the queue and yielding until the
 semaphore is available.
 
 \begin{verbatim}
-void wait(semaphore* s)
-{
-    s->value--;
-    if(s->value < 0){
-        enqueue_process();
-        /* Add self to the wait queue and block/sleep */
+    void wait(semaphore* s)
+    {
+        s->value--;
+        if(s->value < 0){
+            enqueue_process();
+            /* Add self to the wait queue and block/sleep */
+        }
     }
-}
 
-void signal(semaphore* s)
-{
-    s->value++;
-    if(s->value <= 0){
-        dequeue_process();
-        /* Remove a process from the wait queue and wake it */
+    void signal(semaphore* s)
+    {
+        s->value++;
+        if(s->value <= 0){
+            dequeue_process();
+            /* Remove a process from the wait queue and wake it */
+        }
     }
-}
 \end{verbatim}
 
 \subsubsection{Bounded Buffer Problem}\label{bounded-buffer-problem}
@@ -684,11 +615,41 @@ This scheme is found in many modern operating systems as it allows for programs 
 
 Pages are stored in the \textit{page table} which is stored in main memory. An address is generated by the CPU which states the \textit{page number} which acts as a \textit{base index} of the page table, and offset that provides the physical address when combined with the page number.
 
-With a pure page table, we need \textit{two} accesses to retrieve a page, once to the table to get the location of the page, and then to get the actual contents of the page. We can implement a buffer however to speed this up, the \textit{transfer look-aside buffer}, or \textit{associative memory}.
+With a pure page table, we need \textit{two} accesses to retrieve a page, once to the table to get the location of the page, and then to get the actual contents of the page. We can implement a buffer however to speed this up, the \textit{translation look-aside buffer}, or \textit{associative memory}.
 
 The buffer stores identifiers that uniquely identify each process, but keeps the number of entries quite low, usually with only 64 to 1024 entries.
 
 If a request is made for some page but is no in the buffer, referred to as a \textit{miss}, the value will be loaded in for next time.
+
+\begin{description}
+\item[Physical Address] Same as a physical memory address in a simpler page-less system
+\item[Logical Address] Is the concatenation of a Page Number and Page Offset, and is the 
+addressing scheme exposed to programs.
+\item[Page Table] Holds the translations from a \textit{page number} to the base address 
+(starting memory address) of a page. Each process has it's own page table.
+\item[Page Offset] How far into a page the word of memory we're addressing is.
+\item[Page Frame] The divisions of physical memory that can hold a page; A page frame is the same size as a page, but may or may not contain a (valid) page.
+\item[PTBR] Page Table Base Register - holds the physical addres of the start of the page table
+\item[PTLR] Page Table Length Register
+\item[TLB] Translation Look-aside Buffer - effectively a fast cache of mappings from Logical to Physical addresses
+\end{description}
+
+WORDS.
+
+The size of a page is usually OS specific, sometimes architecture specific. Sizes in the range 4KiB to 8MiB
+or more are not unusual; Very small pages, however, are undesirable as the page table itself takes 
+memory to keep track of all pages.
+
+Pages can be shared between processes, in a similar way to shared memory amongst threads. The mechanism for this is 
+simple, as two processes sharing a page will simply have two different (though not necessarily different) logical 
+addresses resolve to the same physical address. Standard concurrency problems can occur. 
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.8\textwidth]{tlbPaging}
+  \caption{Paging datapath with a TLB}
+  \textit{\footnotesize Note that the lookup concurrently runs through the TLB and page table; This is a race but the TLB is significantly faster, so if a hit occurs the Page Table lookup is cancelled.}
+\end{figure}
 
 \subsection{Memory Protection Within Pages}
 
@@ -719,6 +680,16 @@ Breaks the logical address space into \textit{multiple page tables}.
 
 The page number portion of the address would then be split further, into another page table and offset value.
 
+This quicky gets silly. A page number in a three level paging system for a 64 bit address space is as follows:
+
+\begin{verbatim}
+
+    | 2nd Outer Page | Outer Page | Inner Page | Offset |
+    |----------------|------------|------------|--------|
+    | 63          32 | 31      22 | 21      12 | 11   0 |
+
+\end{verbatim}
+
 \subsubsection{Hashed Page Table}
 
 Where the page number is hashed into a page table, where each element has the virtual page numbe,r value of the page frame and a pointer to the next element.
@@ -733,6 +704,85 @@ There is one entry in the table for each real page of memory, which contains the
 
 This reduces the amount of space that is required to store the table but it takes longer to search the table when a page is referenced.
 
+
+
+
+
+\section{Memory Management}
+Programs must be brought from disk into memory and then placed into a process.
+
+The CPU can only access data from memory, not disk.
+
+Register access takes at most 1 CPU cycle, but Main Memory can take many cycles, causing a \emph{Stall}.
+
+\subsection{Base and Limit Registers}
+A set of \emph{base} and \emph{limit registers} define the logical adress space. The CPU must check every
+memory access is valid between the base and the limit for that user. Failure causes a trap in the OS, and usually results in a program being killed (e.g. a \emph{Segmentation Fault})
+
+\subsection{Virtual Address Space}
+Logical/Virtual addresses are independent of physical memory.
+
+Hardware translates virtual addresses into physical ones.
+
+Logical/Virtual addresses a process can reference is called the address space.
+
+
+
+
+\section{Virtual Memory}
+
+\subsection{Page Fault}
+If there is a reference to a page that isn't stored in memory, then there will be a trap to the OS, a page fault.
+
+The OS then finds a free frame, swaps page into frame via a sheduled disk operation then resets the tables for validity.
+
+Pages are only brought into memory when referenced, this is called demand paging.
+
+\subsection{Page Replacement}
+There are a couple ways to pick which page to replace.
+\begin{itemize}
+    \item Pick a page that won't be needed any time soon
+    \item Pick a page that hasn't been used in a while
+\end{itemize}
+
+The goal of all of this to reduce the fault rate by selecting the best victim page to remove.
+Best being one that will never be touched again.
+
+Belady's proof:
+"evicting the page that won’t be used for the longest period of time minimizes page fault rate"
+
+\emph{Thrashing} is when the system spends most of its time serving page faults, and little time doing useful things.
+
+This could mean that there is not enough memory or that the memory is over-committed.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale=0.35]{pageFaultGraph.png}
+  \caption{Page Faults vs Number of Frames}
+\end{figure}
+
+\subsubsection{Replacement Algorithms}
+\begin{itemize}
+    \item First-In-First-Out
+    \item Belady's Optimal Algorithm - Replace frame that will not be used for the longest time.
+        (Not possible as we can't see into the future)
+    \item Least Recently Used(LRU)
+    \item Replace a page that is 'old enough' - logically, place all pages in a cirlce and rotate round
+
+\end{itemize}
+
+\vspace{0.5cm}
+
+FIFO and LRU can each be implimented locally or globaly.
+
+Local :- Each process has a limited number of frames and operates within them.
+
+Global :- the vicit is chosen from all page frames in the system, regardless of owner:
+
+
+
+
+\filbreak
 \section{File Systems}
 
 The OS acts as an intermediary between the OS and an FS. It should hide hardware specifics and allocate disk blocks for the FS.
