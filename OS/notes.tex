@@ -32,10 +32,51 @@ Different architectures dictates the way that an operating system must conduct i
 
 As different architecture platforms have different instruction sets, it determines what are viable methods for accomplishing tasks such as \textit{memory protection} and \textit{control interrupts}.
 
-\subsection{OS Structure}
-
 The OS acts as an intermediary between software and hardware. It allows to mediate access and gives developers a nicer way of completing lower-level actions. This abstraction is achieved via \textit{traps} and \textit{exceptions}. Similarly, devices can gain attention via the use of \textit{interrupts}.
 
+An OS is intended to be a good balance between \textit{user needs} and \textit{system needs}.
+
+A user wants an OS to be \textit{fast, reliable and safe}; an OS developer wants it to be \textit{efficient, error-free, and easy to maintain and implement}.
+
+The design of an operating systems makes a distinction between two underlying principles:
+
+\textbf{Policy}, which is \textit{what} will be done; \textbf{Mechanism}, which his \textit{how} to do it.
+
+\subsection{Structure of an OS}
+
+A capable operating system is home to a multitude of components: memory management, I/O, file systems, command interpreters and so on. There are multiple ways to link to structure how all these components are connected to each other.
+
+\subsubsection{Monolithic}
+
+An early type of design for an OS, where the \textit{entire} operating system would function in \textit{kernel mode} (see the \textit{Privileged Instructions} section). However, this design carried many issues with maintainability and reliability, and was hard to make sense of.
+
+\subsubsection{Layering}
+
+As opposed to monolithic, this method implemented the OS as a \textit{set of layers} instead, where a layer could present itself to the corresponding layer above.
+
+\begin{figure}[H]
+  \centering
+  \begin{center}
+  \begin{tabular}{|c|c|l|}
+    \hline
+    5 & \textbf{Job Managers} & Execute a user's programs\\
+    \hline
+    4 & \textbf{Device Managers} & Handle devices, provide buffering\\
+    \hline
+    3 & \textbf{Console Manager} & Provide virtual consoles\\
+    \hline
+    2 & \textbf{Page Manager} & Implement virtual memories for each process\\
+    \hline
+    1 & \textbf{Kernel} & Implement a virtual processor for each process\\
+    \hline
+    0 & \textbf{Hardware} & \\
+    \hline
+  \end{tabular}
+\end{center}
+\caption{Dijkstra's THE System}
+\end{figure}
+
+\filbreak
 \subsection{Privileged Instructions}
 
 These instructions are restricted to use by the OS \textit{only}, and includes direct access to \textit{I/O devices} and \textit{memory state management}.
