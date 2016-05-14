@@ -1,7 +1,10 @@
 \documentclass{article}
 \usepackage{parskip}
-\usepackage[margin=2cm]{geometry}
+\usepackage[margin=1.5cm]{geometry}
 \usepackage{graphicx}
+\usepackage{framed}
+\usepackage{float}
+
 \graphicspath{{.}}
 
 % Thanks to Angus Pearson for nagging me to fuck about with fonts in
@@ -33,17 +36,48 @@ As different architecture platforms have different instruction sets, it determin
 These instructions are restricted to use by the OS \textit{only}, and includes direct access to \textit{I/O devices} and \textit{memory state management}.
 
 This is achieved by the implementation of two \textit{modes of operation}; \textit{user} and \textit{kernel} modes.
+
+Privileged instructions can only be executed in kernel mode.
+
 \begin{figure}[h!]
   \centering
   \includegraphics[scale=0.35]{privilegeGraphX86}
   \caption{x86 Architecture Levels of Privilege}
-  \textit{Courtesy of Hertzsprung of English Wikipedia}
+  \textit{\footnotesize Courtesy of Hertzsprung of English Wikipedia}
 \end{figure}
 
-More words?
+\subsubsection{System Calls}
 
+If code running from within user mode tries to execute a privileged instruction, it will trigger the \textit{illegal execution trap}, which allows for such code to gain access to privileged instructions and resources. These are called \textit{system calls}.
 
-\section{Memory Managment}
+An OS will define a set of system calls that makes it possible for such an interaction to take place.
+
+\begin{figure}[H]
+  \begin{framed}
+    \textit{Caller}: The user mode process invoking the system call\\
+    \textit{Callee}: The OS handling the system code\\
+    \begin{itemize}
+    \item The caller places arguments, especially the \textit{type} of system call, in a specified location
+    \item The callee saves the caller's state
+    \item The callee verifies the arguments
+    \item If valid, the code is run
+    \item When the system call has been satisfied, the program counter is set to the return address
+    \item Execution is returned to user mode
+    \end{itemize}
+  \end{framed}
+  \caption{A rough breakdown of a system call}
+\end{figure}
+
+\subsection{Exception Handling}
+
+A \textit{trap} is a synchronised, intended transition that is initiated by the OS.
+
+An \textit{exception} is also synchronised, however it is an \textit{unexpected} problem with some instruction.
+
+An \textit{interrupt} is \textit{a}synchronous on the other hand, and is caused by some external device.
+
+\filbreak
+\section{Memory Management}
 Programs must be brought from disk into mmemory and then placed into a process.
 
 The CPU can only access data from memory, not disk.
@@ -80,7 +114,7 @@ Some old techniques include:
 \begin{itemize}
     \item Fixed Partitions - simple but causes fragmentation often
     \item Variable Partitions - no internal fragmentation, but can leave holes in the physical memory
-\end{itemization}
+\end{itemize}
 
 Dynamic Storage-Allocation is possible using First-fit, Best-fir and Worst-fit in terms of hole filling.
 
