@@ -84,7 +84,17 @@ Finally we define constraints to remove combinations of variables that would not
 
 The constraints allow us to reduce the number of test cases that we have, as an unwieldy test suite does not provide much benefit.
 
+\subsection{Pairwise Combinatorial Testing}
 
+Category partitioning is quite an exhaustive process, which pairwise combinations try to avoid.
+
+Most bugs in software are a result of an erroneous single input. It is far less common to find a bug that involves an interaction between three or more parameters.
+
+Pairwise covers all \underline{combinations of size 2}. This produces an inherently smaller test suite than taking the entire Cartesian product.
+
+\subsection{Catalog Based Testing}
+
+This method of testing is based on experience made by an organisation over time in deriving valuable test suites.
 
 \section{Structural Testing}
 
