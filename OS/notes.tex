@@ -648,8 +648,6 @@ addressing scheme exposed to programs.
 \item[TLB] Translation Look-aside Buffer - effectively a fast cache of mappings from Logical to Physical addresses
 \end{description}
 
-WORDS.
-
 The size of a page is usually OS specific, sometimes architecture specific. Sizes in the range 4KiB to 8MiB
 or more are not unusual; Very small pages, however, are undesirable as the page table itself takes 
 memory to keep track of all pages.
@@ -874,9 +872,11 @@ This is represented via the \textit{access control matrix}, that lists what user
 \subsection{UNIX inodes}
 
 Stands for index node. An inode contains a file's metadata and the location of it's first blocks on disk.
-An \textbf{indirect block} is a block that itself contains pointers to further blocks; With this an inode can represent larger files. Similarly a \textbf{double indirect} block contains pointers to indirect blocks that then poing to data blocks.
+An \textbf{indirect block} is a block that itself contains pointers to further blocks; With this an inode can represent larger files. Similarly a \textbf{double indirect} block contains pointers to indirect blocks that then pointing to data blocks.
 
 So for a filesystem with 512B blocks, and inodes with 12 blocks, 1 indirect and one double indirect block, the maximum filesize an inode can represent is ${12 \times 512B + 512 \times 512B + 512^2 \times 512B = 128.3 MiB}$
+
+
 
 \subsection{Organising Blocks}
 
