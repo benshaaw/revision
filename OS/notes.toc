@@ -5,10 +5,10 @@
 \contentsline {subsubsection}{\numberline {1.1.3}Hardware Abstraction Layer}{3}
 \contentsline {subsubsection}{\numberline {1.1.4}Microkernel}{3}
 \contentsline {subsubsection}{\numberline {1.1.5}Loadable Kernel Modules}{3}
-\contentsline {subsection}{\numberline {1.2}Privileged Instructions}{4}
+\contentsline {subsection}{\numberline {1.2}Privileged Instructions}{3}
 \contentsline {subsubsection}{\numberline {1.2.1}System Calls}{4}
 \contentsline {subsection}{\numberline {1.3}Exception Handling}{4}
-\contentsline {subsection}{\numberline {1.4}Processes}{5}
+\contentsline {subsection}{\numberline {1.4}Processes}{4}
 \contentsline {subsection}{\numberline {1.5}PCB: Process Control Block}{5}
 \contentsline {subsection}{\numberline {1.6}State Queues}{6}
 \contentsline {subsection}{\numberline {1.7}Sequential Process}{6}
