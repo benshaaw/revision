@@ -48,4 +48,5 @@
 \contentsline {subsection}{\numberline {7.1}Access Methods}{19}
 \contentsline {subsection}{\numberline {7.2}Directories}{19}
 \contentsline {subsection}{\numberline {7.3}File Protection}{19}
-\contentsline {subsection}{\numberline {7.4}Organising Blocks}{20}
+\contentsline {subsection}{\numberline {7.4}UNIX inodes}{20}
+\contentsline {subsection}{\numberline {7.5}Organising Blocks}{20}

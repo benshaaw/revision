@@ -799,13 +799,13 @@ Global :- the victim is chosen from all page frames in the system, regardless of
 \filbreak
 \section{File Systems}
 
-The OS acts as an intermediary between the OS and an FS. It should hide hardware specifics and allocate disk blocks for the FS.
+The OS acts as an intermediary between the FS and an Disk. It should hide hardware specifics and allocate disk blocks for the FS.
 
 The file system is responsible for the organisation of files.
 
 For example, Windows' file system NTFS relies on the OS making distinct difference between what disk it is reading from, such as the hard disk or a connected USB thumb drive: \texttt{C:}, \texttt{D:}, etc.
 
-On the other hand, Linux makes no distinction and instead maintains a sole \textit{root}, \texttt{/}, where everything is seen as a 'file', such as a hard disk (\texttt{/dev/sda}), or a media file you may have (\texttt{/home/user/swedgefulBasslines.mp3}).
+On the other hand, Linux makes no distinction and instead maintains a sole \textit{root}, \texttt{/}, where everything is seen as a 'file', such as a hard disk (\texttt{/dev/sda}), or a media file you may have (\texttt{/home/user/swedgefulBasslines.mp3}). % Fucking cretin
 
 A file is a \textit{collection} of data; its \textit{contents}, \textit{size}, \textit{owner}, and so on.
 
@@ -859,6 +859,13 @@ This is represented via the \textit{access control matrix}, that lists what user
 \end{figure}
 
 \textit{Access control matrices} are stored as \textit{lists}, which are easier to manage, but grow in size depending on the number of users, or collection of users (\textit{groups}).
+
+\subsection{UNIX inodes}
+
+Stands for index node. An inode contains a file's metadata and the location of it's first blocks on disk.
+An \textbf{indirect block} is a block that itself contains pointers to further blocks; With this an inode can represent larger files. Similarly a \textbf{double indirect} block contains pointers to indirect blocks that then poing to data blocks.
+
+So for a filesystem with 512B blocks, and inodes with 12 blocks, 1 indirect and one double indirect block, the maximum filesize an inode can represent is ${12 \times 512B + 512 \times 512B + 512^2 \times 512B = 128.3 MiB}$
 
 \subsection{Organising Blocks}
 
