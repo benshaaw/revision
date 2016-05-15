@@ -30,9 +30,9 @@ ItalicFont=NotoSans-Italic.ttf, BoldItalicFont=NotoSans-BoldItalic.ttf
 
 \section{OS Architecture}
 
-Different architectures dictates the way that an operating system must conduct its business.
+Different architectures dictate the way that an operating system may conduct its business.
 
-As different architecture platforms have different instruction sets, it determines what are viable methods for accomplishing tasks such as \textit{memory protection} and \textit{control interrupts}.
+As different architecture platforms have different instruction sets and ASPLOS features, it determines what are viable methods for accomplishing tasks such as \textit{memory protection} and \textit{control interrupts}.
 
 The OS acts as an intermediary between software and hardware. It allows mediation of access and gives developers a consistent API to access hardware and low-level operations. This abstraction is achieved via \textit{traps} and \textit{exceptions}. Similarly, devices can gain attention via the use of \textit{interrupts}.
 
@@ -78,7 +78,7 @@ As opposed to monolithic, this method implemented the OS as a \textit{set of lay
   \caption{Dijkstra's THE System}
 \end{figure}
 
-Layering provides a \textit{hierarchical} structure but provides performance issues as overhead increases at each layer. Systems can be modelled as layers, but tend not to be implemented in such a way in reality.
+Layering provides a \textit{hierarchical} structure but provides performance issues as the overhead increases with the addition of each layer. Systems can be modelled as layers, but tend not to be implemented in such a way.
 
 \subsubsection{Hardware Abstraction Layer}
 
