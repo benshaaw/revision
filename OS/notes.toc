@@ -44,6 +44,7 @@
 \contentsline {subsection}{\numberline {6.1}Page Fault}{17}
 \contentsline {subsection}{\numberline {6.2}Page Replacement}{17}
 \contentsline {subsubsection}{\numberline {6.2.1}Replacement Algorithms}{18}
+\contentsline {subsection}{\numberline {6.3}Segmentation}{18}
 \contentsline {section}{\numberline {7}File Systems}{19}
 \contentsline {subsection}{\numberline {7.1}Access Methods}{19}
 \contentsline {subsection}{\numberline {7.2}Directories}{19}

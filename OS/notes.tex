@@ -794,6 +794,17 @@ Local :- Each process has a limited number of frames and operates within them.
 Global :- the victim is chosen from all page frames in the system, regardless of owner:
 
 
+\subsection{Segmentation}
+
+Memories are usually split into distinct segments by programs -- the stack, heap, data section and code section.
+Segmentation provides hardware support for enforcing these distinct memory segments.
+
+Segmentation is another memory model, that we could contrast with paging. Under segmentation, a virtual address
+is \verb|segment number| and \verb|offset|. Segmentation allows for the sharing of segments between threads and processes in the same way Paging allows shared pages.
+
+Segments are managed with a \emph{Segment Table} that holds base and limit paris, indexed by segment number. Segmentation gives rise to the Segmentation Fault, everyone's favourite C crash. In modern systems, segmentation is rarelt used alone, and is generally used in conjunction with paging.
+
+\emph{Segment Registers} are a feature on some more CISC processors, like Intel x86 and hold base pointers to segments. The x86 segment registers are \textbf{SS} stack segment, \textbf{CS} code segment, \textbf{DS} data segment, \textbf{ES} extra segment and the additional \textbf{FS} \& \textbf{GS} generic segments.
 
 
 \filbreak
