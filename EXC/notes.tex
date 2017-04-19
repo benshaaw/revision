@@ -1,0 +1,69 @@
+\documentclass[a4paper]{article}
+
+\usepackage{ifxetex}
+
+\ifxetex
+    \usepackage{fontspec}
+    \setmainfont{PT Serif}
+\fi
+
+\usepackage[margin=5em]{geometry}
+\usepackage{parskip}
+
+\begin{document}
+
+\begin{center}
+{\huge \textbf{Extreme Computing Notes}}
+\end{center}
+
+\section{Computing as a Service}
+
+\subsection*{Patter Buster}
+
+\begin{itemize}
+\item
+  \textbf{Infrastructure as a Service} \textit{(Utility Computing)}
+  \begin{itemize}
+  \item
+    The vendor provides and maintains the hardware, everything else is up to the client.
+  \item
+    \textit{Amazon EC2, Rackspace}
+  \end{itemize}
+\item
+  \textbf{Platform as a Service}
+  \begin{itemize}
+  \item
+    The hardware and underlying operating system are abstracted away from the client, providing a platform for the development of and deployment of applications
+  \item
+    \textit{Heroku, Google App Engine}
+  \end{itemize}
+\item
+  \textbf{Software as a Service}
+  \begin{itemize}
+  \item
+    Where the software is delivered to the client from a centrally hosted location. Mostly intended for end-users.
+    \item
+  \textit{GMail, Salesforce}
+
+  \end{itemize}
+\end{itemize}
+
+\subsection*{Why?}
+
+\begin{itemize}
+\item
+  Addresses issues of cost and feasability in regard to scalability
+\item
+  Provides \textit{elasticity}, such that resources required can be scaled in accordance with demand
+\end{itemize}
+
+\section{The Cloud}
+
+The \textit{first tier} handles client requests, should be lightweight and can be handled by simple PHP pages for example. \textit{Replication} is akey concept such that the tier can handled most client requests without delay. This tier also takes away strain from the `online load' from the second tier.
+
+The \textit{second tier} performs much of the heavy lifting and makes extensive use of \textit{caching}, but does not need replication to the same extent of the first tier.
+
+
+
+\end{document}
+
